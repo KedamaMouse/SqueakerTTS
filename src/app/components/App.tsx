@@ -4,10 +4,21 @@ import { IElectrionAPI } from '../../preload';
 
 interface IVoice
 {
+    voiceInfo:
+    {
+        name: string;
+        id: string;
+        description: string;
 
+    }
 }
 
-export const App = (props:{electronAPI : IElectrionAPI}) => {
+interface IAppProps
+{
+    electronAPI : IElectrionAPI;
+}
+
+export const App:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("test");
     const [voices,setVoices] = React.useState<Array<IVoice>>();
 
@@ -19,18 +30,41 @@ export const App = (props:{electronAPI : IElectrionAPI}) => {
     {
         props.electronAPI.sendTTSCommand("speak",text);
         setText("");
-        getVoices(props.electronAPI,setVoices);
+        getVoices(props.electronAPI,setVoices);//TODO remove. easier to debug with, since render process isn't currently attached to debugger on launch.
     },[text]);  
 
     if(!voices)
     {
         getVoices(props.electronAPI,setVoices);
     }
+    return <>
+        <div><textarea value={text} onChange={handleChange} />
+        <button onClick={buttonClick}>speak</button></div>
+        <VoiceList voices={voices} electronAPI={props.electronAPI} />
 
-    return <div><textarea value={text} onChange={handleChange} />
-    <button onClick={buttonClick}>speak</button></div>;
+    </>;
     
 };
+
+interface IVoiceListProps
+{
+    electronAPI : IElectrionAPI;
+    voices: Array<IVoice>;
+}
+const VoiceList:React.FC<IVoiceListProps> = (props) =>
+{
+    const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
+    
+        props.electronAPI.sendTTSCommand("setVoice",event.target.value);
+    },[]);
+
+
+    const options = props.voices?.map((voice)=>
+    {
+        return <option value={voice.voiceInfo.name} key={voice.voiceInfo.id}>{voice.voiceInfo.description}</option>
+    });
+    return <select onChange={changeHandler}>{options}</select>
+}
 
 async function getVoices(electronAPI:IElectrionAPI,setVoices: React.Dispatch<(prevState: undefined) => undefined>)
 {

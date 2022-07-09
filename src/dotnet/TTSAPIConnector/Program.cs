@@ -42,6 +42,7 @@ public class TTSAPIConnector {
         synthesizer = new SpeechSynthesizer(); 
         connection.On<string>("speak", Speak);
         connection.On("getVoices", GetVoices);
+        connection.On<string>("setVoice", SetVoice);
      }
 
     public void Listen() 
@@ -57,8 +58,11 @@ public class TTSAPIConnector {
     {
         var voices = synthesizer.GetInstalledVoices();
 
-
-
         return voices;
+    }
+
+    public void SetVoice(string name) 
+    {
+        synthesizer.SelectVoice(name);
     }
 }
