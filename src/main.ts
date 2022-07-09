@@ -5,9 +5,9 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { ConnectionBuilder } from "electron-cgi";
 
 let window: BrowserWindow | null;
-const dllPath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConnector\\bin\\Debug\\net6.0\\TTSAPIConnector.dll";
+const exepath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConnector\\bin\\Debug\\net6.0\\TTSAPIConnector.exe";
 
-let connection =new ConnectionBuilder().connectTo("dotnet", dllPath).build();
+let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 
 
 ipcMain.handle("sendTTSCommand",(_event,command,args)=>

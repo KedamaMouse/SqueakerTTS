@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TTSAPIConnector": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    }
+  }
+}
