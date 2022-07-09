@@ -3,15 +3,16 @@ import { contextBridge, ipcRenderer } from "electron";
 
 export interface IElectrionAPI 
 {
-    sendTTSCommand:(command:string, args: any) => void;
+    sendTTSCommand:(command:string, args: any) => Promise<any>;
 }
 
 const electronAPI: IElectrionAPI=
 {    
     sendTTSCommand: (command:string, args: any) => 
     {
-        ipcRenderer.send("sendTTSCommand",command,args);        
+        return ipcRenderer.invoke("sendTTSCommand",command,args);        
     }
+
 }
 
 contextBridge.exposeInMainWorld('electronAPI',electronAPI);
