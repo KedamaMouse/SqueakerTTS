@@ -37,6 +37,9 @@ export const App:React.FC<IAppProps> = (props) => {
     {
         getVoices(props.electronAPI,setVoices);
     }
+
+    
+
     return <>
         <div><textarea value={text} onChange={handleChange} />
         <button onClick={buttonClick}>speak</button></div>
@@ -53,17 +56,22 @@ interface IVoiceListProps
 }
 const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
+    const [selectedVoice,setSelectedVoice]= React.useState<string>(window.localStorage.getItem("selectedVoice"));
     const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
-    
-        props.electronAPI.sendTTSCommand("setVoice",event.target.value);
-    },[]);
+        setSelectedVoice(event.target.value);
+    },[setSelectedVoice]);
+
+    React.useEffect(()=>{
+        props.electronAPI.sendTTSCommand("setVoice",selectedVoice);
+        window.localStorage.setItem("selectedVoice",selectedVoice);
+    },[selectedVoice]);
 
 
     const options = props.voices?.map((voice)=>
     {
         return <option value={voice.voiceInfo.name} key={voice.voiceInfo.id}>{voice.voiceInfo.description}</option>
     });
-    return <select onChange={changeHandler}>{options}</select>
+    return props.voices ? <select onChange={changeHandler} value={selectedVoice}>{options}</select> : <></>;
 }
 
 async function getVoices(electronAPI:IElectrionAPI,setVoices: React.Dispatch<(prevState: undefined) => undefined>)
