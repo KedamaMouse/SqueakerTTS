@@ -1,12 +1,32 @@
 const url = require("url");
 const path = require("path");
 
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
+import { ConnectionBuilder, Connection } from "electron-cgi";
 
 let window: BrowserWindow | null;
+const dllPath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConnector\\bin\\Debug\\net6.0\\TTSAPIConnector.dll";
+
+let connection =new ConnectionBuilder().connectTo("dotnet", dllPath).build();
+
+
+ipcMain.on("sendTTSCommand",(event,command,args)=>
+{
+  console.log(command);
+  console.log(args);
+  connection.send(command,args);
+})
 
 const createWindow = () => {
-  window = new BrowserWindow({ width: 800, height: 600 });
+  window = new BrowserWindow({ width: 800, height: 600 ,webPreferences: {
+    devTools: true,
+    nodeIntegration: false,
+    nodeIntegrationInWorker: false,
+    nodeIntegrationInSubFrames: false,
+    contextIsolation: true,
+    preload: path.join(__dirname, "preload.js"),
+    disableBlinkFeatures: "Auxclick",
+  }});
 
   window.loadURL(
     url.format({
@@ -22,6 +42,7 @@ const createWindow = () => {
 };
 
 app.on("ready", createWindow);
+
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

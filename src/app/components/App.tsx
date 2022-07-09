@@ -1,17 +1,20 @@
 
 import * as React from 'react';
+import { IElectrionAPI } from '../../preload';
 
+export const App = (props:{electronAPI : IElectrionAPI}) => {
+    const [text,setText] = React.useState<string>("test");
 
-import { ConnectionBuilder, Connection } from "electron-cgi";
+    const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
+        setText(event.target.value);
+    },[setText]);
 
-export const App = () => {
-    const [connection, setConnection] = React.useState<Connection>();
-
-    if(!connection)
+    const buttonClick = React.useCallback(()=>
     {
-        
-        setConnection(new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build());
-    }
+        props.electronAPI.sendTTSCommand("speak",text);
+        setText("");
+    },[text]);  
 
-    return <div>Hello Mom!</div>;
+    return <div><textarea value={text} onChange={handleChange} />
+    <button onClick={buttonClick}>speak</button></div>;
 };
