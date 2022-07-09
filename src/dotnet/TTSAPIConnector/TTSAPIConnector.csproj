@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ElectronCgi.DotNet" Version="0.0.1" />
+    <PackageReference Include="ElectronCgi.DotNet" Version="1.0.3" />
   </ItemGroup>
 
 </Project>

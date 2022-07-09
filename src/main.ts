@@ -1,8 +1,8 @@
 const url = require("url");
 const path = require("path");
 
-import { app, BrowserWindow, ipcMain, IpcMainEvent } from "electron";
-import { ConnectionBuilder, Connection } from "electron-cgi";
+import { app, BrowserWindow, ipcMain } from "electron";
+import { ConnectionBuilder } from "electron-cgi";
 
 let window: BrowserWindow | null;
 const dllPath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConnector\\bin\\Debug\\net6.0\\TTSAPIConnector.dll";
@@ -10,10 +10,8 @@ const dllPath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConne
 let connection =new ConnectionBuilder().connectTo("dotnet", dllPath).build();
 
 
-ipcMain.on("sendTTSCommand",(event,command,args)=>
+ipcMain.on("sendTTSCommand",(_event,command,args)=>
 {
-  console.log(command);
-  console.log(args);
   connection.send(command,args);
 })
 
