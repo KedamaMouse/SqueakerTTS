@@ -33,6 +33,14 @@ export const App:React.FC<IAppProps> = (props) => {
         getVoices(props.electronAPI,setVoices);//TODO remove. easier to debug with, since render process isn't currently attached to debugger on launch.
     },[text]);  
 
+    const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
+        if(event.key=== "Enter")
+        {
+            props.electronAPI.sendTTSCommand("speak",text);
+            setText("");
+        }
+    },[text])
+
     if(!voices)
     {
         getVoices(props.electronAPI,setVoices);
@@ -41,7 +49,7 @@ export const App:React.FC<IAppProps> = (props) => {
     
 
     return <>
-        <div><textarea value={text} onChange={handleChange} />
+        <div><textarea onKeyUp={onKeyUp} value={text} onChange={handleChange} />
         <button onClick={buttonClick}>speak</button></div>
         <VoiceList voices={voices} electronAPI={props.electronAPI} />
 
