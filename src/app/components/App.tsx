@@ -28,7 +28,8 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const buttonClick = React.useCallback(()=>
     {
-        props.electronAPI.sendTTSCommand("speak",text);
+
+        props.electronAPI.sendTTSCommand("speak",text.replaceAll('\'','').trim());
         setText("");
         getVoices(props.electronAPI,setVoices);//TODO remove. easier to debug with, since render process isn't currently attached to debugger on launch.
     },[text]);  
@@ -36,22 +37,19 @@ export const App:React.FC<IAppProps> = (props) => {
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         if(event.key=== "Enter")
         {
-            props.electronAPI.sendTTSCommand("speak",text);
-            setText("");
+            buttonClick();
         }
-    },[text])
+    },[buttonClick])
 
     if(!voices)
     {
         getVoices(props.electronAPI,setVoices);
     }
 
-    
-
     return <>
         <div><textarea onKeyUp={onKeyUp} value={text} onChange={handleChange} />
         <button onClick={buttonClick}>speak</button></div>
-        <VoiceList voices={voices} electronAPI={props.electronAPI} />
+        { voices ? <VoiceList voices={voices} electronAPI={props.electronAPI} /> : null}
 
     </>;
     

@@ -10,9 +10,9 @@ const exepath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConne
 let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 
 
-ipcMain.handle("sendTTSCommand",(_event,command,args)=>
+ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
 {
-  return connection.send(command,args);
+  return connection.send(command,arg);
 })
 
 const createWindow = () => {
