@@ -1,7 +1,13 @@
 {
   "profiles": {
-    "TTSAPIConnector": {
+    "' test": {
       "commandName": "Project",
+      "commandLineArgs": "--text \"''''''\" --voice \"Amazon Polly - US English - Justin (Standard)\"",
+      "nativeDebugging": true
+    },
+    "<> test": {
+      "commandName": "Project",
+      "commandLineArgs": "--text \"<><><><><><>\" --voice \"Amazon Polly - US English - Justin (Standard)\"",
       "nativeDebugging": true
     }
   }

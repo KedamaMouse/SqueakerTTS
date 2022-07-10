@@ -4,6 +4,7 @@ using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
+using System.Text.RegularExpressions;
 
 public class TTSAPIConnector {
 
@@ -13,45 +14,83 @@ public class TTSAPIConnector {
     {
         var rootCommand = new RootCommand
         {
-            new Option<bool>("--connect")
+            new Option<bool>("--connect"),
+            new Option<string>("--voice"),
+            new Option<string>("--text")
         };
-        rootCommand.Handler = CommandHandler.Create<bool>(mainHandler);
+        rootCommand.Handler = CommandHandler.Create<bool,string,string>(mainHandler);
         return rootCommand.Invoke(args);
     }
 
-    static int mainHandler(bool connect) 
+    static int mainHandler(bool connect,string voice,string text) 
     {
-        TTSAPIConnector connector = new TTSAPIConnector();
+        TTSAPIConnector connector = new TTSAPIConnector(connect);
         if (connect)
         {
             connector.Listen();
             return 0;
         }
+        if (voice != null) 
+        {
+            connector.SetVoice(voice);
+        }
+        if (text != null) 
+        {
+            connector.Speak(text);
+        }
         return 0;
     }
 
-    private readonly Connection connection;
+    private readonly Connection? connection;
     SpeechSynthesizer? synthesizer;
-    public TTSAPIConnector() {
-        connection = new ConnectionBuilder().WithLogging().Build();
+    public TTSAPIConnector(bool MakeConnection) {
+        
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return; //Not yet supported.
         }
         
-        synthesizer = new SpeechSynthesizer(); 
-        connection.On<string>("speak", Speak);
-        connection.On("getVoices", GetVoices);
-        connection.On<string>("setVoice", SetVoice);
+        synthesizer = new SpeechSynthesizer();
+
+        if (MakeConnection)
+        {
+            connection = new ConnectionBuilder().WithLogging().Build();
+            connection.On<string>("speak", Speak);
+            connection.On("getVoices", GetVoices);
+            connection.On<string>("setVoice", SetVoice);
+        }
      }
 
     public void Listen() 
     {
-        connection.Listen();
+        connection?.Listen();
     }
     public void Speak(string Text) 
     {
-        synthesizer.Speak(Text);
+        if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
+        {
+            Text = sanitizeForAmazonPolly(Text);
+        }
+
+        if (!String.IsNullOrEmpty(Text))
+        {
+            synthesizer.Speak(Text);
+        }
+    }
+
+    /// <summary>
+    /// sending some strings with special characters to amazon polly crashes, so fix them.
+    /// ' or ` at the end of strings causes issues, and doesn't affect the result, so remove them.
+    /// <> can break if multiple are next to eachother, so add spaces.
+    /// (){}[] all break it if there's no actual text in the string.
+    /// multiple . in a row breaks it too, replace with one .
+    /// </summary>
+    /// <param name="Text"></param>
+    /// <returns></returns>
+    private string sanitizeForAmazonPolly(string Text) 
+    {
+
+        return Regex.Replace(Regex.Replace(Text, @"[\'\`\(\)\{\}\[\]\*]+", "").Replace("<", "< ").Replace(">", "> "), @"\.{2,}", ".");
     }
 
     public System.Collections.ObjectModel.ReadOnlyCollection<InstalledVoice> GetVoices() 

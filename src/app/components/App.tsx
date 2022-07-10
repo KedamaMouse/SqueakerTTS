@@ -29,7 +29,7 @@ export const App:React.FC<IAppProps> = (props) => {
     const buttonClick = React.useCallback(()=>
     {
 
-        props.electronAPI.sendTTSCommand("speak",text.replaceAll('\'','').trim());
+        props.electronAPI.sendTTSCommand("speak",text.trim());
         setText("");
         getVoices(props.electronAPI,setVoices);//TODO remove. easier to debug with, since render process isn't currently attached to debugger on launch.
     },[text]);  
