@@ -1,5 +1,6 @@
 ﻿using ElectronCgi.DotNet;
 using SpeechLib;
+using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
 using System.Runtime.InteropServices;
@@ -32,7 +33,10 @@ public class TTSAPIConnector {
         }
         if (voice != null) 
         {
-            connector.SetVoice(voice);
+            if (!connector.SmartSetVoice(voice)) 
+            {
+                return -1;
+            }
         }
         if (text != null) 
         {
@@ -93,11 +97,39 @@ public class TTSAPIConnector {
         return Regex.Replace(Regex.Replace(Text, @"[\'\`\(\)\{\}\[\]\*]+", "").Replace("<", "< ").Replace(">", "> "), @"\.{2,}", ".");
     }
 
-    public System.Collections.ObjectModel.ReadOnlyCollection<InstalledVoice> GetVoices() 
+    public ReadOnlyCollection<InstalledVoice> GetVoices() 
     {
         var voices = synthesizer.GetInstalledVoices();
 
         return voices;
+    }
+
+    public bool SmartSetVoice(string voice) 
+    {
+        string[] keywords = voice.Split(" ");
+
+        ReadOnlyCollection<InstalledVoice> voices = synthesizer.GetInstalledVoices();
+
+        foreach (InstalledVoice v in voices) 
+        {
+            bool matches = true;
+            foreach (string keyword in keywords) 
+            {
+                if (!v.VoiceInfo.Name.Contains(keyword,StringComparison.OrdinalIgnoreCase))
+                {
+                    matches = false; 
+                }
+            }
+            if (matches) 
+            {
+                SetVoice(v.VoiceInfo.Name);
+                return true;
+            }
+        }
+
+        Console.WriteLine("No match found for voice " + voice);
+        return false;
+        
     }
 
     public void SetVoice(string name) 
