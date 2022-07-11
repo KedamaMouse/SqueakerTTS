@@ -5,7 +5,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { ConnectionBuilder } from "electron-cgi";
 
 let window: BrowserWindow | null;
-const exepath="C:\\Users\\roaik\\codeProjects\\easyTTS\\src\\dotnet\\TTSAPIConnector\\bin\\Debug\\net6.0\\TTSAPIConnector.exe";
+const exepath="C:\\Users\\roaik\\codeProjects\\squeakerTTS\\src\\dotnet\\SqueakerTTSCmd\\bin\\Debug\\net6.0\\SqueakerTTSCmd.exe";
 
 let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 

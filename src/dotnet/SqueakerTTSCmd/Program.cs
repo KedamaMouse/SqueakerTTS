@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
 
-public class TTSAPIConnector {
+public class SqueakerTTSCmd {
 
 
 
@@ -25,7 +25,7 @@ public class TTSAPIConnector {
 
     static int mainHandler(bool connect,string voice,string text) 
     {
-        TTSAPIConnector connector = new TTSAPIConnector(connect);
+        SqueakerTTSCmd connector = new SqueakerTTSCmd(connect);
         if (connect)
         {
             connector.Listen();
@@ -47,7 +47,7 @@ public class TTSAPIConnector {
 
     private readonly Connection? connection;
     SpeechSynthesizer? synthesizer;
-    public TTSAPIConnector(bool MakeConnection) {
+    public SqueakerTTSCmd(bool MakeConnection) {
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
