@@ -19,7 +19,7 @@ interface IAppProps
 }
 
 export const App:React.FC<IAppProps> = (props) => {
-    const [text,setText] = React.useState<string>("test");
+    const [text,setText] = React.useState<string>("");
     const [voices,setVoices] = React.useState<Array<IVoice>>();
 
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
@@ -47,7 +47,7 @@ export const App:React.FC<IAppProps> = (props) => {
     }
 
     return <>
-        <div><textarea onKeyUp={onKeyUp} value={text} onChange={handleChange} />
+        <div><textarea autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
         <button onClick={buttonClick}>speak</button></div>
         { voices ? <VoiceList voices={voices} electronAPI={props.electronAPI} /> : null}
 
