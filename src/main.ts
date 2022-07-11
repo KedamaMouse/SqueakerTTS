@@ -15,6 +15,8 @@ ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
   return connection.send(command,arg);
 })
 
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+
 const createWindow = () => {
   window = new BrowserWindow({ width: 800, height: 600 ,webPreferences: {
     devTools: true,
@@ -24,6 +26,7 @@ const createWindow = () => {
     contextIsolation: true,
     preload: path.join(__dirname, "preload.js"),
     disableBlinkFeatures: "Auxclick",
+    backgroundThrottling: false,
   }});
 
   window.loadURL(
