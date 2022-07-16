@@ -1,5 +1,4 @@
 ﻿using ElectronCgi.DotNet;
-using SpeechLib;
 using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
