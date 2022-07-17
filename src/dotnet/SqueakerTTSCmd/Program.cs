@@ -15,14 +15,15 @@ public class SqueakerTTSCmd {
         var rootCommand = new RootCommand
         {
             new Option<bool>("--connect"),
+            new Option<bool>("--ssml"),
             new Option<string>("--voice"),
             new Option<string>("--text")
         };
-        rootCommand.Handler = CommandHandler.Create<bool,string,string>(mainHandler);
+        rootCommand.Handler = CommandHandler.Create<bool,bool,string,string>(mainHandler);
         return rootCommand.Invoke(args);
     }
 
-    static int mainHandler(bool connect,string voice,string text) 
+    static int mainHandler(bool connect,bool ssml, string voice,string text) 
     {
         SqueakerTTSCmd connector = new SqueakerTTSCmd(connect);
         if (connect)
@@ -39,7 +40,14 @@ public class SqueakerTTSCmd {
         }
         if (text != null) 
         {
-            connector.Speak(text);
+            if (ssml)
+            {
+                connector.SpeakSSML(text);
+            }
+            else
+            {
+                connector.Speak(text);
+            }
         }
         return 0;
     }
@@ -61,6 +69,7 @@ public class SqueakerTTSCmd {
             connection.On<string>("speak", Speak);
             connection.On("getVoices", GetVoices);
             connection.On<string>("setVoice", SetVoice);
+            connection.On("stop", Stop);
         }
      }
 
@@ -72,14 +81,32 @@ public class SqueakerTTSCmd {
     {
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
-            Text = sanitizeForAmazonPolly(Text);
+            Text =sanitizeForAmazonPolly(Text);
         }
 
         if (!String.IsNullOrEmpty(Text))
         {
+            //synthesizer.SpeakSsml(Text);
             synthesizer.Speak(Text);
+            
         }
     }
+
+    public void SpeakSSML(string text) 
+    {
+        if (!String.IsNullOrEmpty(text)) 
+        {
+            synthesizer.SpeakSsml(text);
+        }
+    }
+
+    public void Stop() 
+    {
+        synthesizer.SpeakAsyncCancelAll();
+ 
+    }
+
+   
 
     /// <summary>
     /// sending some strings with special characters to amazon polly crashes, so fix them.
@@ -92,7 +119,7 @@ public class SqueakerTTSCmd {
     /// <returns></returns>
     private string sanitizeForAmazonPolly(string Text) 
     {
-
+        //return "<speak version=\"1.0\">" + Text + "</speak>";
         return Regex.Replace(Regex.Replace(Text, @"[\'\`\(\)\{\}\[\]\*]+", "").Replace("<", "< ").Replace(">", "> "), @"\.{2,}", ".");
     }
 

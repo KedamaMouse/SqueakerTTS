@@ -31,7 +31,6 @@ export const App:React.FC<IAppProps> = (props) => {
 
         props.electronAPI.sendTTSCommand("speak",text.trim());
         setText("");
-        getVoices(props.electronAPI,setVoices);//TODO remove. easier to debug with, since render process isn't currently attached to debugger on launch.
     },[text]);  
 
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
@@ -39,6 +38,10 @@ export const App:React.FC<IAppProps> = (props) => {
         {
             buttonClick();
         }
+        else if(event.key === "Escape")
+        {
+            props.electronAPI.sendTTSCommand("stop");
+        }  
     },[buttonClick])
 
     if(!voices)
