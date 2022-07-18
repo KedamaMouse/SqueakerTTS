@@ -20,7 +20,7 @@ const config = {
     ]
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".ts", ".tsx", ".js",".css"]
   },
   node: {
     __dirname: false,

@@ -50,8 +50,8 @@ export const App:React.FC<IAppProps> = (props) => {
     }
 
     return <>
-        <div><textarea autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
-        <button onClick={buttonClick}>speak</button></div>
+        <div><textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
+        </div>
         { voices ? <VoiceList voices={voices} electronAPI={props.electronAPI} /> : null}
 
     </>;
