@@ -14,4 +14,8 @@
     <PackageReference Include="System.Speech" Version="7.0.0-preview.5.22301.12" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="Xcopy /E /I $(TargetDir) $(SolutionDir)..\..\..\dist\bin\" />
+  </Target>
+
 </Project>

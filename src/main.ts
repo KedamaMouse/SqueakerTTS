@@ -5,7 +5,7 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { ConnectionBuilder } from "electron-cgi";
 
 let window: BrowserWindow | null;
-const exepath="C:\\Users\\roaik\\codeProjects\\squeakerTTS\\src\\dotnet\\SqueakerTTSCmd\\bin\\Debug\\net6.0\\SqueakerTTSCmd.exe";
+const exepath=path.join(__dirname,"bin\\SqueakerTTSCmd.exe")
 
 let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 
@@ -18,7 +18,7 @@ ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
 const createWindow = () => {
-  window = new BrowserWindow({ width: 800, height: 600 ,webPreferences: {
+  window = new BrowserWindow({ width: 500, height: 600 ,webPreferences: {
     devTools: true,
     nodeIntegration: false,
     nodeIntegrationInWorker: false,
