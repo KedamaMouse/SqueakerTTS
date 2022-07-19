@@ -9,6 +9,16 @@
       "commandName": "Project",
       "commandLineArgs": "--text \"<><><><><><>\" --voice \"Amazon Polly - US English - Justin (Standard)\"",
       "nativeDebugging": true
+    },
+    "question": {
+      "commandName": "Project",
+      "commandLineArgs": "--text \"wah?\" --voice \"Justin\"",
+      "nativeDebugging": true
+    },
+    "doggy": {
+      "commandName": "Project",
+      "commandLineArgs": "--text \"a doggy\" --voice \"Justin\"",
+      "nativeDebugging": true
     }
   }
 }

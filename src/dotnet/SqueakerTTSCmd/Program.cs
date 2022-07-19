@@ -119,8 +119,10 @@ public class SqueakerTTSCmd {
     /// <returns></returns>
     private string sanitizeForAmazonPolly(string Text) 
     {
-        //return "<speak version=\"1.0\">" + Text + "</speak>";
-        return Regex.Replace(Regex.Replace(Text, @"[\'\`\(\)\{\}\[\]\*]+", "").Replace("<", "< ").Replace(">", "> "), @"\.{2,}", ".");
+        Text= Regex.Replace(Text, @"[\']+\Z", ""); //strip ' at the end of the string
+        Text = Regex.Replace(Text, @"[\`\(\)\{\}\[\]\*]+", ""); //strip characters that can break it but aren't read
+        Text= Regex.Replace(Text, @"\.{2,}", "."); //replace multiple . with one
+        return Text.Replace("<", "< ").Replace(">", "> ").Replace(".", " .").Replace("?", " ?");
     }
 
     public ReadOnlyCollection<InstalledVoice> GetVoices() 
