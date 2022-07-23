@@ -1,13 +1,14 @@
 ﻿using System.Diagnostics;
 using AudioSwitcher.AudioApi.CoreAudio;
 using AudioSwitcher.AudioApi.Session;
+using SqueakerTTSInterfaces;
 
 namespace SqueakerTTSWin
 {
-    public static class WidowsUtils
+    public class WidowsUtils: IPlatformDependantUtils
     {
 
-        public static void SetVolume(int volume) 
+        public void SetVolume(int volume) 
         {
             var controler = new CoreAudioController();
             var devices = controler.GetPlaybackDevices();
@@ -19,12 +20,14 @@ namespace SqueakerTTSWin
                     {
                         session.SetVolumeAsync(volume);
                     }
+                    
                 }
+                
             }
 
         }
 
-
+        
 
     }
 }

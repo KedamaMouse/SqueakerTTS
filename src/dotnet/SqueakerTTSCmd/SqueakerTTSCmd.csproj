@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SqueakerTTSInterfaces\SqueakerTTSInterfaces.csproj" />
     <ProjectReference Include="..\SqueakerTTSWin\SqueakerTTSWin.csproj" />
   </ItemGroup>
 

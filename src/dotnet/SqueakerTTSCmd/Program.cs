@@ -1,5 +1,6 @@
 ﻿
 using ElectronCgi.DotNet;
+using SqueakerTTSInterfaces;
 using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
@@ -56,13 +57,15 @@ public class SqueakerTTSCmd {
 
     private readonly Connection? connection;
     SpeechSynthesizer? synthesizer;
+    IPlatformDependantUtils platformUtils;
     public SqueakerTTSCmd(bool MakeConnection) {
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
             return; //Not yet supported.
         }
-        
+
+        platformUtils = new SqueakerTTSWin.WidowsUtils();
         synthesizer = new SpeechSynthesizer();
 
         MemoryStream streamAudio = new MemoryStream();
@@ -174,6 +177,6 @@ public class SqueakerTTSCmd {
 
     public void SetVolume(string volume) 
     {
-        SqueakerTTSWin.WidowsUtils.SetVolume(int.Parse(volume));
+        platformUtils.SetVolume(int.Parse(volume));
     }
 }
