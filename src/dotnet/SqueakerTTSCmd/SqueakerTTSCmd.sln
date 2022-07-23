@@ -5,6 +5,8 @@ VisualStudioVersion = 17.2.32602.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SqueakerTTSCmd", "SqueakerTTSCmd.csproj", "{00C4C426-2047-4FB6-8E8C-89D1C7B8E551}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqueakerTTSWin", "..\SqueakerTTSWin\SqueakerTTSWin.csproj", "{5353C2DC-08A3-4A4F-8C16-D9430C8A5F3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{00C4C426-2047-4FB6-8E8C-89D1C7B8E551}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C4C426-2047-4FB6-8E8C-89D1C7B8E551}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00C4C426-2047-4FB6-8E8C-89D1C7B8E551}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5353C2DC-08A3-4A4F-8C16-D9430C8A5F3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5353C2DC-08A3-4A4F-8C16-D9430C8A5F3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5353C2DC-08A3-4A4F-8C16-D9430C8A5F3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5353C2DC-08A3-4A4F-8C16-D9430C8A5F3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

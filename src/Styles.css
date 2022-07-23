@@ -7,4 +7,14 @@ body {
   background-color: rgb(173, 151, 173);
 }
 
+.volumeSliderTrack {
+  background-color: rgb(173, 151, 173);
+}
+
+.volumeSliderThumb {
+  background-color: rgb(78, 113, 85);
+  color: white;
+  border-radius: 25px;
+}
+
 /*# sourceMappingURL=Styles.css.map */

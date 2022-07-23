@@ -1,8 +1,9 @@
 
 import * as React from 'react';
 import { IElectrionAPI } from '../../preload';
-import ReactSlider from 'react-slider';
+
 import { VoiceList } from './VoiceList';
+import { VolumeSlider } from './VolumeSlider';
 
 
 
@@ -39,7 +40,8 @@ export const App:React.FC<IAppProps> = (props) => {
 
     return  <>
                 <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
-                <VoiceList electronAPI={props.electronAPI} />  
+                <VoiceList electronAPI={props.electronAPI} />
+                <VolumeSlider electronAPI={props.electronAPI} /> 
             </>;
     
 };

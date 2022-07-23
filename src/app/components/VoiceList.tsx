@@ -19,7 +19,6 @@ interface IVoiceListProps
 export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
     const [voices,setVoices] = React.useState<Array<IVoice>>();
-
     const [selectedVoice,setSelectedVoice]= React.useState<string>(window.localStorage.getItem("selectedVoice"));
     const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
         setSelectedVoice(event.target.value);

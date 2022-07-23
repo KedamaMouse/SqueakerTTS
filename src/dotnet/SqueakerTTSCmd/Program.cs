@@ -1,10 +1,12 @@
-﻿using ElectronCgi.DotNet;
+﻿
+using ElectronCgi.DotNet;
 using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
+
 
 public class SqueakerTTSCmd {
 
@@ -63,6 +65,10 @@ public class SqueakerTTSCmd {
         
         synthesizer = new SpeechSynthesizer();
 
+        MemoryStream streamAudio = new MemoryStream();
+        //System.Media.SoundPlayer m_SoundPlayer = new System.Media.SoundPlayer();
+        
+
         if (MakeConnection)
         {
             connection = new ConnectionBuilder().WithLogging().Build();
@@ -70,6 +76,7 @@ public class SqueakerTTSCmd {
             connection.On("getVoices", GetVoices);
             connection.On<string>("setVoice", SetVoice);
             connection.On("stop", Stop);
+            connection.On<string>("setVolume", SetVolume);
         }
      }
 
@@ -163,5 +170,10 @@ public class SqueakerTTSCmd {
     public void SetVoice(string name) 
     {
         synthesizer.SelectVoice(name);
+    }
+
+    public void SetVolume(string volume) 
+    {
+        SqueakerTTSWin.WidowsUtils.SetVolume(int.Parse(volume));
     }
 }
