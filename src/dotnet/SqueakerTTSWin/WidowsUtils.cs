@@ -2,6 +2,8 @@
 using AudioSwitcher.AudioApi.CoreAudio;
 using AudioSwitcher.AudioApi.Session;
 using SqueakerTTSInterfaces;
+using NAudio.Wasapi;
+
 
 namespace SqueakerTTSWin
 {
@@ -11,9 +13,11 @@ namespace SqueakerTTSWin
         public void SetVolume(int volume) 
         {
             var controler = new CoreAudioController();
+            
             var devices = controler.GetPlaybackDevices();
             foreach (var device in devices) 
             {
+                
                 foreach (var session in device.GetCapability<IAudioSessionController>()) 
                 {
                     if (session.ProcessId == Process.GetCurrentProcess().Id) 
@@ -26,8 +30,5 @@ namespace SqueakerTTSWin
             }
 
         }
-
-        
-
     }
 }

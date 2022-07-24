@@ -96,7 +96,6 @@ public class SqueakerTTSCmd {
 
         if (!String.IsNullOrEmpty(Text))
         {
-            //synthesizer.SpeakSsml(Text);
             synthesizer.Speak(Text);
             
         }

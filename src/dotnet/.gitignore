@@ -286,7 +286,6 @@ FakesAssemblies/
 node_modules/
 
 release-builds/
-
 # Visual Studio 6 build log
 *.plg
 

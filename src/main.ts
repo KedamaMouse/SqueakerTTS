@@ -5,7 +5,8 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { ConnectionBuilder } from "electron-cgi";
 
 let window: BrowserWindow | null;
-const exepath=path.join(__dirname,"bin\\SqueakerTTSCmd.exe")
+const exepath=path.join(process.resourcesPath,"bin\\SqueakerTTSCmd.exe");
+console.debug(process.resourcesPath);
 
 let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 
