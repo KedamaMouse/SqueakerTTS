@@ -22,7 +22,7 @@
     },
     "amazon polly ssml": {
       "commandName": "Project",
-      "commandLineArgs": "--voice \"just\" --text \"<speak version=\\\"1.0\\\" xmlns=\\\"http://www.w3.org/2001/10/synthesis\\\" xml:lang=\\\"en-US\\\"><amazon:effect name=\\\"whispered\\\">This is my wispering voice</amazon:effect></speak>\"",
+      "commandLineArgs": "--voice \"just\" --text \"vocal tract test\"",
       "nativeDebugging": true
     }
   }

@@ -7,7 +7,8 @@ using System.CommandLine.NamingConventionBinder;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 using System.Text.RegularExpressions;
-
+using System.Xml;
+using System.Xml.Linq;
 
 public class SqueakerTTSCmd {
 
@@ -49,7 +50,7 @@ public class SqueakerTTSCmd {
             }
             else
             {
-                connector.Speak(new TTSRequest() {text=text });
+                connector.Speak(new TTSRequest() {text=text, vocalLength=100 });
             }
         }
         return 0;
@@ -91,10 +92,19 @@ public class SqueakerTTSCmd {
     {
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
-            //Text =sanitizeForAmazonPolly(Text);
-        }
+            //always use ssml for amazon polly,otherwise it's harder to handle special characters and you might get "invalid ssml request" accidently. 
+            XmlDocument doc = new XmlDocument(); //would like to use this for the whole request.. but it's hard to make namespaces work with it how amazon expects when we're only making a partial document like this.
+            request.text = doc.CreateTextNode(request.text).OuterXml; //sanitizes/escapes characters for xml
+            
+            if (request.vocalLength != 100) 
+            {
+                request.text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength+"%\">"+request.text+"</amazon:effect>";
+            }
 
-        if (!String.IsNullOrEmpty(request.text))
+            request.text = "<speak>" + request.text + "</speak>";
+            synthesizer.Speak(request.text);
+        }
+        else if (!String.IsNullOrEmpty(request.text))
         {
             synthesizer.Speak(request.text);
             
