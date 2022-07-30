@@ -19,6 +19,11 @@
       "commandName": "Project",
       "commandLineArgs": "--text \"a doggy\" --voice \"Justin\"",
       "nativeDebugging": true
+    },
+    "amazon polly ssml": {
+      "commandName": "Project",
+      "commandLineArgs": "--voice \"just\" --text \"<speak version=\\\"1.0\\\" xmlns=\\\"http://www.w3.org/2001/10/synthesis\\\" xml:lang=\\\"en-US\\\"><amazon:effect name=\\\"whispered\\\">This is my wispering voice</amazon:effect></speak>\"",
+      "nativeDebugging": true
     }
   }
 }

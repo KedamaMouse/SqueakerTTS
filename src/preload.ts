@@ -3,15 +3,29 @@ import { contextBridge, ipcRenderer } from "electron";
 
 export interface IElectrionAPI 
 {
-    sendTTSCommand:(command:string,  arg?: string) => Promise<any>;
+    sendTTSCommand:(command:string,  arg?: any) => Promise<any>;
+    speak:(args: ITTSRequest) => Promise<any>;
+    
+}
+
+export interface ITTSRequest
+{
+    text: string;
+    vocalLength: number;
+}
+
+const coreSend= (command:string, arg?: any) => 
+{
+    return ipcRenderer.invoke("sendTTSCommand",command, arg);        
 }
 
 const electronAPI: IElectrionAPI=
-{    
-    sendTTSCommand: (command:string, arg?: string) => 
+{
+    speak: (args: ITTSRequest) =>
     {
-        return ipcRenderer.invoke("sendTTSCommand",command, arg);        
-    }
+        return coreSend("speak",args);
+    },     
+    sendTTSCommand: coreSend
 
 }
 

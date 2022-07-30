@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="Xcopy /E /I /Y $(TargetDir) $(SolutionDir)..\..\..\dist\bin\" />
+    <Exec Command="Xcopy /E /I /Y $(TargetDir) $(SolutionDir)..\..\dist\bin\" />
   </Target>
 
 </Project>

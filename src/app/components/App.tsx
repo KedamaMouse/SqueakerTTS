@@ -21,8 +21,7 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const submitText = React.useCallback(()=>
     {
-
-        props.electronAPI.sendTTSCommand("speak",text.trim());
+        props.electronAPI.speak({text: text.trim(), vocalLength: 100});
         setText("");
     },[text]);  
 

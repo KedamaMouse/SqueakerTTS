@@ -49,7 +49,7 @@ public class SqueakerTTSCmd {
             }
             else
             {
-                connector.Speak(text);
+                connector.Speak(new TTSRequest() {text=text });
             }
         }
         return 0;
@@ -75,7 +75,7 @@ public class SqueakerTTSCmd {
         if (MakeConnection)
         {
             connection = new ConnectionBuilder().WithLogging().Build();
-            connection.On<string>("speak", Speak);
+            connection.On<TTSRequest>("speak", Speak);
             connection.On("getVoices", GetVoices);
             connection.On<string>("setVoice", SetVoice);
             connection.On("stop", Stop);
@@ -87,16 +87,16 @@ public class SqueakerTTSCmd {
     {
         connection?.Listen();
     }
-    public void Speak(string Text) 
+    public void Speak(TTSRequest request) 
     {
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
-            Text =sanitizeForAmazonPolly(Text);
+            //Text =sanitizeForAmazonPolly(Text);
         }
 
-        if (!String.IsNullOrEmpty(Text))
+        if (!String.IsNullOrEmpty(request.text))
         {
-            synthesizer.Speak(Text);
+            synthesizer.Speak(request.text);
             
         }
     }
@@ -174,8 +174,15 @@ public class SqueakerTTSCmd {
         synthesizer.SelectVoice(name);
     }
 
-    public void SetVolume(string volume) 
+    public void SetVolume(string volume)
     {
         platformUtils.SetVolume(int.Parse(volume));
+    }
+
+    [Serializable()]
+    public class TTSRequest 
+    {
+        public string? text { get; set; }
+        public int vocalLength { get; set; }
     }
 }
