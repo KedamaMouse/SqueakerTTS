@@ -69,10 +69,6 @@ public class SqueakerTTSCmd {
         platformUtils = new SqueakerTTSWin.WidowsUtils();
         synthesizer = new SpeechSynthesizer();
 
-        MemoryStream streamAudio = new MemoryStream();
-        //System.Media.SoundPlayer m_SoundPlayer = new System.Media.SoundPlayer();
-        
-
         if (MakeConnection)
         {
             connection = new ConnectionBuilder().WithLogging().Build();

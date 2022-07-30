@@ -22,3 +22,14 @@ body
     color: white;
     border-radius: 25px;
 }
+
+.sliderContainer
+{
+    display: flex;    
+}
+
+.sliderSlider
+{
+    flex-grow: 1;
+    margin-left: 10px;
+}
