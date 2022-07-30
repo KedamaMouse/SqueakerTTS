@@ -3,7 +3,7 @@ import * as React from 'react';
 import { IElectrionAPI } from '../../preload';
 
 import { VoiceList } from './VoiceList';
-import { VolumeSlider } from './VolumeSlider';
+import { parseIntSetting, Slider, VolumeSlider } from './Sliders';
 
 
 
@@ -14,15 +14,22 @@ interface IAppProps
 
 export const App:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
+    const [vocalLength,setVocalLength] = React.useState<number>(parseIntSetting("VocalLength",50,200,100));
 
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
     },[setText]);
 
+    const onVocalLengthChange = React.useCallback((value: number)=>
+    {
+        window.localStorage.setItem("VocalLength",value.toString());
+        setVocalLength(value);
+
+    },[setVocalLength]);
+
     const submitText = React.useCallback(()=>
     {
-
-        props.electronAPI.sendTTSCommand("speak",text.trim());
+        props.electronAPI.speak({text: text.trim(), vocalLength: vocalLength});
         setText("");
     },[text]);  
 
@@ -42,6 +49,7 @@ export const App:React.FC<IAppProps> = (props) => {
                 <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
                 <VoiceList electronAPI={props.electronAPI} />
                 <VolumeSlider electronAPI={props.electronAPI} /> 
+                <Slider min={50} max={200} value={vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
             </>;
     
 };

@@ -19,6 +19,11 @@
       "commandName": "Project",
       "commandLineArgs": "--text \"a doggy\" --voice \"Justin\"",
       "nativeDebugging": true
+    },
+    "amazon polly ssml": {
+      "commandName": "Project",
+      "commandLineArgs": "--voice \"just\" --text \"vocal tract test\"",
+      "nativeDebugging": true
     }
   }
 }
