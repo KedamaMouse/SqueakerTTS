@@ -86,13 +86,17 @@ public class SqueakerTTSCmd {
     }
     public void Speak(TTSRequest request) 
     {
+        if (String.IsNullOrEmpty(request.text)) { return;}
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
+            request.text = sanitizeForAmazonPolly(request.text);
+            if (String.IsNullOrEmpty(request.text)) { return; }
+
             //always use ssml for amazon polly,otherwise it's harder to handle special characters and you might get "invalid ssml request" accidently. 
             XmlDocument doc = new XmlDocument(); //would like to use this for the whole request.. but it's hard to make namespaces work with it how amazon expects when we're only making a partial document like this.
             request.text = doc.CreateTextNode(request.text).OuterXml; //sanitizes/escapes characters for xml
             
-            if (request.vocalLength != 100) 
+            if (request.vocalLength != 100 && !synthesizer.Voice.Name.Contains("Neural")) 
             {
                 request.text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength+"%\">"+request.text+"</amazon:effect>";
             }
@@ -100,7 +104,7 @@ public class SqueakerTTSCmd {
             request.text = "<speak>" + request.text + "</speak>";
             synthesizer.Speak(request.text);
         }
-        else if (!String.IsNullOrEmpty(request.text))
+        else 
         {
             synthesizer.Speak(request.text);
             
@@ -124,7 +128,7 @@ public class SqueakerTTSCmd {
    
 
     /// <summary>
-    /// sending some strings with special characters to amazon polly crashes, so fix them.
+    /// sending some strings with special characters to amazon polly crashes, even in a proper ssml request, so fix them.
     /// ' or ` at the end of strings causes issues, and doesn't affect the result, so remove them.
     /// <> can break if multiple are next to eachother, so add spaces.
     /// (){}[] all break it if there's no actual text in the string.
@@ -137,7 +141,7 @@ public class SqueakerTTSCmd {
         Text= Regex.Replace(Text, @"[\']+\Z", ""); //strip ' at the end of the string
         Text = Regex.Replace(Text, @"[\`\(\)\{\}\[\]\*]+", ""); //strip characters that can break it but aren't read
         Text= Regex.Replace(Text, @"\.{2,}", "."); //replace multiple . with one
-        return Text.Replace("<", "< ").Replace(">", "> ").Replace(".", " .").Replace("?", " ?");
+        return Text.Replace("<", "< ").Replace(">", "> ");
     }
 
     public ReadOnlyCollection<InstalledVoice> GetVoices() 
