@@ -50,7 +50,7 @@ public class SqueakerTTSCmd {
             }
             else
             {
-                connector.Speak(new TTSRequest() {text=text, vocalLength=100 });
+                connector.Speak(new TTSRequest() {text=text, vocalLength=100, rate=100,pitch=0 });
             }
         }
         return 0;
@@ -101,6 +101,21 @@ public class SqueakerTTSCmd {
                 request.text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength+"%\">"+request.text+"</amazon:effect>";
             }
 
+            bool adjustPitch = (request.pitch != 0 && !synthesizer.Voice.Name.Contains("Neural"));
+            if (adjustPitch || request.rate !=100) 
+            {
+                var opentag = "<prosody rate=\"" + request.rate + "%\"";
+                if (adjustPitch) 
+                {
+                    var pitchString = request.pitch > 0 ? "+" + request.pitch : request.pitch.ToString();
+                    opentag = opentag + " pitch=\"" + pitchString + "%\"";
+                }
+                opentag = opentag + ">";
+
+                request.text = opentag + request.text + "</prosody>";
+
+            }
+
             request.text = "<speak>" + request.text + "</speak>";
             synthesizer.Speak(request.text);
         }
@@ -124,8 +139,6 @@ public class SqueakerTTSCmd {
         synthesizer.SpeakAsyncCancelAll();
  
     }
-
-   
 
     /// <summary>
     /// sending some strings with special characters to amazon polly crashes, even in a proper ssml request, so fix them.
@@ -194,5 +207,8 @@ public class SqueakerTTSCmd {
     {
         public string? text { get; set; }
         public int vocalLength { get; set; }
+
+        public int pitch { get; set; }
+        public int rate { get; set; }
     }
 }

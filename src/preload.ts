@@ -12,6 +12,8 @@ export interface ITTSRequest
 {
     text: string;
     vocalLength: number;
+    pitch: number;
+    rate: number;
 }
 
 const coreSend= (command:string, arg?: any) => 
