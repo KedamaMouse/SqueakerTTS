@@ -26,7 +26,7 @@ export const App:React.FC<IAppProps> = (props) => {
     },[text]);  
 
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
-        if(event.key=== "Enter" || event.key==="," || event.key==="." || event.key==="?" || event.key === "!")
+        if(event.key=== "Enter")
         {
             submitText();
         }
