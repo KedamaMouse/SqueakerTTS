@@ -9,7 +9,6 @@
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package-win": "electron-packager . SqueakerTTS --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"SqueakerTTS\""
-  
   },
   "repository": {
     "type": "git",
@@ -50,6 +49,7 @@
     "gulp-sass": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-slider": "^2.0.1"
+    "react-slider": "^2.0.1",
+    "sqlite3": "^5.0.11"
   }
 }

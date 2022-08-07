@@ -1,6 +1,6 @@
 
 import * as React from 'react';
-import { IElectrionAPI, ITTSRequest } from '../../preload';
+import { IData, IElectrionAPI, ITTSRequest, IVoiceProfile } from "../../ICommonInterfaces";
 import { VoiceOptions } from './VoiceOptions';
 
 
@@ -12,7 +12,9 @@ interface IAppProps
 
 export const App:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
-    const [voiceSettings,setVoiceSettings]= React.useState<ITTSRequest>(null);
+    const [data,setData]= React.useState<IData>(null);
+
+    const voice= data?.voiceProfiles[data.activeVoiceKey];
 
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
@@ -20,10 +22,16 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const submitText = React.useCallback(()=>
     {
-        voiceSettings.text=text.trim();
-        props.electronAPI.speak(voiceSettings);
+        const request: ITTSRequest =
+        {   
+            text: text.trim(),
+            pitch: voice.pitch,
+            rate: voice.rate,
+            vocalLength: voice.vocalLength,
+        };
+        props.electronAPI.speak(request);
         setText("");
-    },[text]);  
+    },[text]); 
 
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         if(event.key=== "Enter")
@@ -35,11 +43,18 @@ export const App:React.FC<IAppProps> = (props) => {
             props.electronAPI.sendTTSCommand("stop");
         }
         
-    },[submitText])
+    },[submitText]);
+
+    const updateVoiceProfile: (value: IVoiceProfile) => void = React.useCallback((value)=>
+    {
+        setData({...data,voiceProfiles:{...data?.voiceProfiles,[value.key]: value}, activeVoiceKey: value.key});
+
+    },[data]);
+    
 
     return  <>
                 <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
-                <VoiceOptions electronAPI={props.electronAPI} voiceSetting={voiceSettings} setVoiceSetting={setVoiceSettings}/>
+                <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voice} setvoiceProfile={updateVoiceProfile}/>
             </>;
     
 };

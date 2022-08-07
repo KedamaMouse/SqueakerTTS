@@ -14,7 +14,6 @@ if(!fs.existsSync(exepath)) //different file path when not packaged.
 }
 if(!fs.existsSync(exepath))
 {
-  
   app.quit();
 }
 
@@ -24,7 +23,10 @@ let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
 {
   return connection.send(command,arg);
-})
+});
+
+JSON.stringify
+
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 

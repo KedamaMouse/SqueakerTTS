@@ -1,20 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { IElectrionAPI, ITTSRequest } from "./ICommonInterfaces";
 
-
-export interface IElectrionAPI 
-{
-    sendTTSCommand:(command:string,  arg?: any) => Promise<any>;
-    speak:(args: ITTSRequest) => Promise<any>;
-    
-}
-
-export interface ITTSRequest
-{
-    text: string;
-    vocalLength: number;
-    pitch: number;
-    rate: number;
-}
 
 const coreSend= (command:string, arg?: any) => 
 {
