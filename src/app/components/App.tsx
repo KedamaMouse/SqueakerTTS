@@ -1,6 +1,7 @@
 
 import * as React from 'react';
 import { IData, IElectrionAPI, ITTSRequest, IVoiceProfile } from "../../ICommonInterfaces";
+import { parseIntSetting } from './Sliders';
 import { VoiceOptions } from './VoiceOptions';
 
 
@@ -51,11 +52,41 @@ export const App:React.FC<IAppProps> = (props) => {
         setData({...data,voiceProfiles:{...data?.voiceProfiles,[value.key]: value}, activeVoiceKey: value.key});
 
     },[data]);
-    
 
-    return  <>
+    React.useEffect(()=>{
+        if(!data){
+            let loadedData=null;
+            try{
+                loadedData=JSON.parse(window.localStorage.getItem("Data"));
+            }catch(e)
+            {
+                console.log("bad data:"+window.localStorage.getItem("Data"));
+            }
+            
+            if(loadedData)
+            {
+                setData(loadedData);
+            }
+            else
+            {
+                updateVoiceProfile({
+                    vocalLength: 100,
+                    pitch: 0,
+                    rate: 100,
+                    key:"default",
+                    voice:"",
+                })
+            }
+        }
+        else{
+            window.localStorage.setItem("Data",JSON.stringify(data));
+        }
+    },[data]);
+    
+    return  data ? <>
                 <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
                 <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
-            </>;
+            </> : null;
     
 };
+
