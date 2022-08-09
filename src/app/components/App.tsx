@@ -14,7 +14,7 @@ export const App:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
     const [data,setData]= React.useState<IData>(null);
 
-    const voice= data?.voiceProfiles[data.activeVoiceKey];
+    const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
 
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
@@ -25,9 +25,10 @@ export const App:React.FC<IAppProps> = (props) => {
         const request: ITTSRequest =
         {   
             text: text.trim(),
-            pitch: voice.pitch,
-            rate: voice.rate,
-            vocalLength: voice.vocalLength,
+            pitch: voiceProfile.pitch,
+            rate: voiceProfile.rate,
+            vocalLength: voiceProfile.vocalLength,
+            voice: voiceProfile.voice
         };
         props.electronAPI.speak(request);
         setText("");
@@ -54,7 +55,7 @@ export const App:React.FC<IAppProps> = (props) => {
 
     return  <>
                 <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
-                <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voice} setvoiceProfile={updateVoiceProfile}/>
+                <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
             </>;
     
 };

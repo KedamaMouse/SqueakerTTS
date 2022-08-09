@@ -30,44 +30,34 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
                 pitch: parseIntSetting("pitch",pitchMin,pitchMax,0),
                 rate: parseIntSetting("rate",rateMin,rateMax,100),
                 key:"default",
-                voice:""
+                voice:window.localStorage.getItem("selectedVoice"),
             });
         }});
 
     const onVocalLengthChange = React.useCallback((value: number)=>
     {
         window.localStorage.setItem("VocalLength",value.toString());
-
-        const newSettings={...props.voiceProfile}        
-        newSettings.vocalLength=value;
-        props.setvoiceProfile(newSettings);
+        props.setvoiceProfile({...props.voiceProfile, "vocalLength": value});
 
     },[props.voiceProfile]);
 
     const onPitchChange = React.useCallback((value: number)=>
     {
         window.localStorage.setItem("pitch",value.toString());
-
-        const newSettings={...props.voiceProfile}
-        newSettings.pitch=value;
-        props.setvoiceProfile(newSettings);
+        props.setvoiceProfile({...props.voiceProfile, "pitch": value});
 
     },[props.voiceProfile]);
 
     const onRateChange = React.useCallback((value: number)=>
     {
         window.localStorage.setItem("rate",value.toString());
-
-        const newSettings={...props.voiceProfile}
-        newSettings.rate=value;
-        props.setvoiceProfile(newSettings);
-
+        props.setvoiceProfile({...props.voiceProfile, "rate": value});
     },[props.voiceProfile]);
 
     if(!props.voiceProfile){return <></>}
 
     return <>                
-        <VoiceList electronAPI={props.electronAPI} />
+        <VoiceList electronAPI={props.electronAPI} voiceProfile={props.voiceProfile} setvoiceProfile={props.setvoiceProfile}/>
         <VolumeSlider electronAPI={props.electronAPI} /> 
         <Slider min={vocalLengthMin} max={vocalLengthMax} value={props.voiceProfile.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
         <Slider min={pitchMin} max={pitchMax} value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/>

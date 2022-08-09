@@ -74,7 +74,6 @@ public class SqueakerTTSCmd {
             connection = new ConnectionBuilder().WithLogging().Build();
             connection.On<TTSRequest>("speak", Speak);
             connection.On("getVoices", GetVoices);
-            connection.On<string>("setVoice", SetVoice);
             connection.On("stop", Stop);
             connection.On<string>("setVolume", SetVolume);
         }
@@ -87,6 +86,8 @@ public class SqueakerTTSCmd {
     public void Speak(TTSRequest request) 
     {
         if (String.IsNullOrEmpty(request.text)) { return;}
+        SetVoice(request.voice);
+
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
             request.text = sanitizeForAmazonPolly(request.text);
@@ -210,5 +211,7 @@ public class SqueakerTTSCmd {
 
         public int pitch { get; set; }
         public int rate { get; set; }
+
+        public string? voice { get; set; }
     }
 }

@@ -11,20 +11,21 @@ export interface ITTSRequest {
     vocalLength: number;
     pitch: number;
     rate: number;
+    voice: string;
 }
 
 export interface IData 
 {
-    activeVoiceKey: string,
-    voiceProfiles: {[key: string]: IVoiceProfile}
+    activeVoiceKey: string;
+    voiceProfiles: {[key: string]: IVoiceProfile};
 
 }
 
 export interface IVoiceProfile
 {
-    key: string,
-    voice: string,
-    vocalLength: number,
-    pitch: number,
-    rate: number
+    key: string;
+    voice: string;
+    vocalLength: number;
+    pitch: number;
+    rate: number;
 }

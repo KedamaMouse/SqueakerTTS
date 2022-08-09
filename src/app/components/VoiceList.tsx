@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IElectrionAPI } from "../../ICommonInterfaces";
+import { IElectrionAPI, IVoiceProfile } from "../../ICommonInterfaces";
 
 interface IVoice
 {
@@ -15,34 +15,26 @@ interface IVoice
 interface IVoiceListProps
 {
     electronAPI : IElectrionAPI;
+    voiceProfile: IVoiceProfile;
+    setvoiceProfile: (value: IVoiceProfile) =>void;
 }
 export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
     const [voices,setVoices] = React.useState<Array<IVoice>>();
-    const [selectedVoice,setSelectedVoice]= React.useState<string>(window.localStorage.getItem("selectedVoice"));
     const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
-        setSelectedVoice(event.target.value);
-    },[setSelectedVoice]);
-
-    React.useEffect(()=>{
-        if(voices)
-        {
-            props.electronAPI.sendTTSCommand("setVoice",selectedVoice);
-            window.localStorage.setItem("selectedVoice",selectedVoice);
-        }
-    },[selectedVoice,voices]);
+        props.setvoiceProfile({...props.voiceProfile, "voice": event.target.value})
+    },[]);
 
     if(!voices)
     {
         getVoices(props.electronAPI,setVoices);
     }
 
-
     const options = voices?.map((voice)=>
     {
         return <option value={voice.voiceInfo.name} key={voice.voiceInfo.id}>{voice.voiceInfo.description}</option>
     });
-    return voices ? <select onChange={changeHandler} value={selectedVoice}>{options}</select> : <></>;
+    return voices ? <select onChange={changeHandler} value={props.voiceProfile.voice}>{options}</select> : <></>;
 }
 
 async function getVoices(electronAPI:IElectrionAPI,setVoices: React.Dispatch<(prevState: undefined) => undefined>)
