@@ -1,9 +1,17 @@
+import { IpcRendererEvent } from "electron";
 
 
 export interface IElectrionAPI {
     sendTTSCommand: (command: string, arg?: any) => Promise<any>;
     speak: (args: ITTSRequest) => Promise<any>;
+    on: (channel: ipcToMainChannels, callback: (event: IpcRendererEvent, ...args: any[]) => void) => ()=>void;
+}
 
+export enum ipcToMainChannels
+{
+    import = "import",
+    export = "export",
+    restoreDefaults = "restoreDefaults",
 }
 
 export interface ITTSRequest {
