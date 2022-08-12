@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ReactSlider from 'react-slider';
-import { IElectrionAPI } from '../../preload';
+import { IElectrionAPI } from "../../ICommonInterfaces";
 
 interface IVolumeSliderProps
 {

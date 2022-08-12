@@ -1,72 +1,42 @@
 import * as React from 'react';
-import { IElectrionAPI, ITTSRequest } from '../../preload';
+import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, vocalLengthMax, vocalLengthMin } from "../../ICommonInterfaces";
 
 import { VoiceList } from './VoiceList';
-import { parseIntSetting, Slider, VolumeSlider } from './Sliders';
+import {Slider, VolumeSlider } from './Sliders';
 
 interface IVoiceOptions
 {
     electronAPI : IElectrionAPI;
-    voiceSetting: ITTSRequest;
-    setVoiceSetting: (value: ITTSRequest) =>void;
+    voiceProfile: IVoiceProfile;
+    setvoiceProfile: (value: IVoiceProfile) =>void;
 }
-
-const vocalLengthMin=50;
-const vocalLengthMax=200;
-const rateMin=20;
-const rateMax=200;
-const pitchMin=-50;//not sure these are accurate for pitch, didn't find these bounds documented.
-const pitchMax=50;
-
 
 export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
     
-    if(!props.voiceSetting)
-    {
-        props.setVoiceSetting({
-            vocalLength: parseIntSetting("VocalLength",vocalLengthMin,vocalLengthMax,100),
-            pitch: parseIntSetting("pitch",pitchMin,pitchMax,0),
-            rate: parseIntSetting("rate",rateMin,rateMax,100),
-            text: "",
-        });
-        return <></>
-    }
-
     const onVocalLengthChange = React.useCallback((value: number)=>
     {
-        window.localStorage.setItem("VocalLength",value.toString());
+        props.setvoiceProfile({...props.voiceProfile, "vocalLength": value});
 
-        const newSettings={...props.voiceSetting}        
-        newSettings.vocalLength=value;
-        props.setVoiceSetting(newSettings);
-
-    },[props.voiceSetting]);
+    },[props.voiceProfile]);
 
     const onPitchChange = React.useCallback((value: number)=>
     {
-        window.localStorage.setItem("pitch",value.toString());
+        props.setvoiceProfile({...props.voiceProfile, "pitch": value});
 
-        const newSettings={...props.voiceSetting}
-        newSettings.pitch=value;
-        props.setVoiceSetting(newSettings);
-
-    },[props.voiceSetting]);
+    },[props.voiceProfile]);
 
     const onRateChange = React.useCallback((value: number)=>
     {
-        window.localStorage.setItem("rate",value.toString());
+        props.setvoiceProfile({...props.voiceProfile, "rate": value});
+    },[props.voiceProfile]);
 
-        const newSettings={...props.voiceSetting}
-        newSettings.rate=value;
-        props.setVoiceSetting(newSettings);
-
-    },[props.voiceSetting]);
+    if(!props.voiceProfile){return <></>}
 
     return <>                
-        <VoiceList electronAPI={props.electronAPI} />
+        <VoiceList electronAPI={props.electronAPI} voiceProfile={props.voiceProfile} setvoiceProfile={props.setvoiceProfile}/>
         <VolumeSlider electronAPI={props.electronAPI} /> 
-        <Slider min={vocalLengthMin} max={vocalLengthMax} value={props.voiceSetting.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
-        <Slider min={pitchMin} max={pitchMax} value={props.voiceSetting.pitch} setValue={onPitchChange} label='pitch'/>
-        <Slider min={rateMin} max={rateMax} value={props.voiceSetting.rate} setValue={onRateChange} label='rate'/>
+        <Slider min={vocalLengthMin} max={vocalLengthMax} value={props.voiceProfile.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
+        <Slider min={pitchMin} max={pitchMax} value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/>
+        <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
     </>
 }

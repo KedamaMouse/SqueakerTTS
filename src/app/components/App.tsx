@@ -1,9 +1,8 @@
 
 import * as React from 'react';
-import { IElectrionAPI, ITTSRequest } from '../../preload';
+import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
+import { TTSInputField } from './TTSInputField';
 import { VoiceOptions } from './VoiceOptions';
-
-
 
 interface IAppProps
 {
@@ -11,35 +10,81 @@ interface IAppProps
 }
 
 export const App:React.FC<IAppProps> = (props) => {
-    const [text,setText] = React.useState<string>("");
-    const [voiceSettings,setVoiceSettings]= React.useState<ITTSRequest>(null);
+   
+    const [data,setData]= React.useState<IData>(null);
 
-    const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
-        setText(event.target.value);
-    },[setText]);
+    const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
 
-    const submitText = React.useCallback(()=>
+    const updateVoiceProfile: (value: IVoiceProfile) => void = React.useCallback((value)=>
     {
-        voiceSettings.text=text.trim();
-        props.electronAPI.speak(voiceSettings);
-        setText("");
-    },[text]);  
+        setData({...data,voiceProfiles:{...data?.voiceProfiles,[value.key]: value}, activeVoiceKey: value.key});
 
-    const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
-        if(event.key=== "Enter")
-        {
-            submitText();
-        }
-        else if(event.key === "Escape")
-        {
-            props.electronAPI.sendTTSCommand("stop");
-        }
-        
-    },[submitText])
+    },[data]);
 
-    return  <>
-                <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
-                <VoiceOptions electronAPI={props.electronAPI} voiceSetting={voiceSettings} setVoiceSetting={setVoiceSettings}/>
-            </>;
+    //Load and save data
+    React.useEffect(()=>{
+        if(!data){
+            let loadedData=null;
+            try{
+                loadedData=JSON.parse(window.localStorage.getItem("Data"));
+            }catch(e)
+            {
+                console.log("bad data:"+window.localStorage.getItem("Data"));
+            }
+            
+            if(loadedData)
+            {
+                setData(loadedData);
+            }
+            else
+            {
+                //set default values
+                updateVoiceProfile({
+                    vocalLength: 100,
+                    pitch: 0,
+                    rate: 100,
+                    key:"default",
+                    voice:"",
+                })
+            }
+        }
+        else{
+            //data exists and changed, save
+            window.localStorage.setItem("Data",JSON.stringify(data));
+        }
+    },[data]);
+    
+    //import/export/clear data
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcToMainChannels.export,()=>{
+            navigator.clipboard.writeText(JSON.stringify(data));
+        });
+        return removeListener;
+    },[data]);
+
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcToMainChannels.import,async ()=>{
+            const newData=await navigator.clipboard.readText();
+            if(newData){
+                window.localStorage.setItem("Data",newData);
+                setData(null);
+            }
+        });
+        return removeListener;
+    },[data]);
+
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcToMainChannels.restoreDefaults,()=>{
+            window.localStorage.removeItem("Data");
+            setData(null);
+        });
+        return removeListener;
+    },[data]);
+
+    return  data ? <>
+                <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} />
+                <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
+            </> : null;
     
 };
+

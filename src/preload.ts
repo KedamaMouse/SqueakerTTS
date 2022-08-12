@@ -1,20 +1,6 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { IElectrionAPI, ipcToMainChannels, ITTSRequest } from "./ICommonInterfaces";
 
-
-export interface IElectrionAPI 
-{
-    sendTTSCommand:(command:string,  arg?: any) => Promise<any>;
-    speak:(args: ITTSRequest) => Promise<any>;
-    
-}
-
-export interface ITTSRequest
-{
-    text: string;
-    vocalLength: number;
-    pitch: number;
-    rate: number;
-}
 
 const coreSend= (command:string, arg?: any) => 
 {
@@ -27,7 +13,16 @@ const electronAPI: IElectrionAPI=
     {
         return coreSend("speak",args);
     },     
-    sendTTSCommand: coreSend
+    sendTTSCommand: coreSend,
+
+    on: (channel: ipcToMainChannels, callback) =>
+    {
+        if(Object.values(ipcToMainChannels).includes(channel)){
+            
+            ipcRenderer.on(channel,callback);
+            return () => {ipcRenderer.removeListener(channel,callback);}
+        }
+    }
 
 }
 

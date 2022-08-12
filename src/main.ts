@@ -2,8 +2,9 @@ const url = require("url");
 const path = require("path");
 const fs = require('fs');
 
-import { app, BrowserWindow, ipcMain } from "electron";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
 import { ConnectionBuilder } from "electron-cgi";
+import { GetMenuTemplate } from "./electronMenu";
 
 let window: BrowserWindow | null;
 
@@ -14,7 +15,6 @@ if(!fs.existsSync(exepath)) //different file path when not packaged.
 }
 if(!fs.existsSync(exepath))
 {
-  
   app.quit();
 }
 
@@ -24,7 +24,7 @@ let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
 ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
 {
   return connection.send(command,arg);
-})
+});
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
@@ -39,7 +39,7 @@ const createWindow = () => {
     disableBlinkFeatures: "Auxclick",
     backgroundThrottling: false,
   }});
-
+  Menu.setApplicationMenu(Menu.buildFromTemplate(GetMenuTemplate(window)));
   window.loadURL(
     url.format({
       pathname: path.join(__dirname, "index.html"),
