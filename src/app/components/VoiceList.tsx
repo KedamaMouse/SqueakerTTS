@@ -8,7 +8,6 @@ interface IVoice
         name: string;
         id: string;
         description: string;
-
     }
 }
 
@@ -22,7 +21,7 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
     const [voices,setVoices] = React.useState<Array<IVoice>>();
     const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
-        props.setvoiceProfile({...props.voiceProfile, "voice": event.target.value})
+        props.setvoiceProfile({...props.voiceProfile, "voice": event.target.value});
     },[]);
 
     if(!voices)
@@ -34,6 +33,11 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
     {
         return <option value={voice.voiceInfo.name} key={voice.voiceInfo.id}>{voice.voiceInfo.description}</option>
     });
+    if(options && props.voiceProfile.voice ==="")
+    {
+        props.setvoiceProfile({...props.voiceProfile, "voice": options[0].props.value});
+    }
+
     return voices ? <select onChange={changeHandler} value={props.voiceProfile.voice}>{options}</select> : <></>;
 }
 
