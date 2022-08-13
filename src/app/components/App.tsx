@@ -1,8 +1,11 @@
 
 import * as React from 'react';
+import styled, { ThemeProvider } from 'styled-components';
 import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
+import { ITheme } from '../theme';
 import { TTSInputField } from './TTSInputField';
 import { VoiceOptions } from './VoiceOptions';
+import { VoiceProfileSelect } from './VoiceProfileSelect';
 
 interface IAppProps
 {
@@ -81,10 +84,39 @@ export const App:React.FC<IAppProps> = (props) => {
         return removeListener;
     },[data]);
 
-    return  data ? <>
-                <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} />
-                <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
-            </> : null;
+
+    const theme: ITheme = {
+        editBackColor:  "rgb(247, 217, 247)",
+        appBackColor:"rgb(159, 109, 159)",
+        sliderThumbBackColor: " rgb(78, 113, 85)",
+        sliderThumbTextColor: "white",
+      };
+
+    return  data ? <ThemeProvider theme={theme}>
+                <OuterDiv> 
+                    <MainPane>
+                        <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} />
+                        <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
+                    </MainPane>
+                    <SidePane>
+                        <VoiceProfileSelect data={data}></VoiceProfileSelect>
+                    </SidePane>
+                </OuterDiv>
+            </ThemeProvider> : null;
     
 };
 
+const OuterDiv= styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: ${props => props.theme.appBackColor};
+    padding: 8px;
+    box-sizing: border-box;
+`
+const MainPane=styled.div`
+      flex-grow: 1;
+`
+const SidePane=styled.div`
+    flex-shrink: 1;
+`
