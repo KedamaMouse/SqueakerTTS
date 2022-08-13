@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../ICommonInterfaces';
 
 interface IAppProps
@@ -6,6 +7,11 @@ interface IAppProps
     electronAPI : IElectrionAPI;
     voiceProfile: IVoiceProfile;
 }
+
+const TextArea = styled.textarea`
+    width:  calc(100% - 10px);
+    background-color: ${props => props.theme.editBackColor};
+`
 
 export const TTSInputField:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
@@ -40,5 +46,5 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
         
     },[submitText]);
 
-    return <textarea className='textArea' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
+    return <TextArea autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
 }
