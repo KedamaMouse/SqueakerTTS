@@ -4,4 +4,5 @@ export interface ITheme
     appBackColor: string;
     sliderThumbBackColor: string;
     sliderThumbTextColor: string;
+    labelTextColor: string;
 }
