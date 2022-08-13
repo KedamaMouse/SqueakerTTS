@@ -19,6 +19,7 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
         widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey}></VoiceProfleWidget>);
     }
 
+
     return <>{widgets}</>
 }
 
@@ -29,18 +30,27 @@ interface IVoiceProfileWidgetProps
 }
 
 const OuterDiv = styled.div`
-font-size: 10px;
-margin: 5px;
-background-color: ${props => props.theme.editBackColor};
+    font-size: 12px;
+    margin: 5px;
+    padding: 5px;
+    background-color: ${props => props.theme.editBackColor};
 `;
+
+const NameDiv=styled.div`
+    font-weight: bold;
+`;
+
+const Label=styled.label`
+    color: ${props => props.theme.labelTextColor};
+`
 
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
-
-
     return <OuterDiv>
-        <div>{props.voiceProfile.key}</div>
-        <div><label>voice</label> {props.voiceProfile.voice}</div>
-        <div><label>vocal length</label>{props.voiceProfile.vocalLength}</div>        
+        <NameDiv>{props.voiceProfile.key}</NameDiv>
+        <div><Label>voice: </Label> {props.voiceProfile.voice}</div>
+        <div><Label>vocal length: </Label>{props.voiceProfile.vocalLength}</div>
+        <div><Label>pitch: </Label>{props.voiceProfile.pitch}</div>
+        <div><Label>rate: </Label>{props.voiceProfile.rate}</div> 
     </OuterDiv>
 }

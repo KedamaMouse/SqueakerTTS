@@ -90,6 +90,7 @@ export const App:React.FC<IAppProps> = (props) => {
         appBackColor:"rgb(159, 109, 159)",
         sliderThumbBackColor: " rgb(78, 113, 85)",
         sliderThumbTextColor: "white",
+        labelTextColor: "rgb(72,72,72)"
       };
 
     return  data ? <ThemeProvider theme={theme}>
