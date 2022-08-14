@@ -18,11 +18,18 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
 
+    //
+    const datastring= JSON.stringify(data); 
+
     const updateVoiceProfile: (value: IVoiceProfile) => void = React.useCallback((value)=>
     {
         setData({...data,voiceProfiles:{...data?.voiceProfiles,[value.key]: value}, activeVoiceKey: value.key});
 
-    },[data]);
+    },[datastring]);
+
+    const setActiveVoiceProfile: (key: string) => void = React.useCallback((key)=>{
+        setData({...data,voiceProfiles:{...data?.voiceProfiles}, activeVoiceKey: key});
+    },[datastring]);
 
     //Load and save data
     React.useEffect(()=>{
@@ -55,7 +62,7 @@ export const App:React.FC<IAppProps> = (props) => {
             //data exists and changed, save
             window.localStorage.setItem("Data",JSON.stringify(data));
         }
-    },[data]);
+    },[datastring]);
     
     //import/export/clear data
     React.useEffect(()=>{
@@ -63,7 +70,7 @@ export const App:React.FC<IAppProps> = (props) => {
             navigator.clipboard.writeText(JSON.stringify(data));
         });
         return removeListener;
-    },[data]);
+    },[datastring]);
 
     React.useEffect(()=>{
         const removeListener=props.electronAPI.on(ipcToMainChannels.import,async ()=>{
@@ -74,7 +81,7 @@ export const App:React.FC<IAppProps> = (props) => {
             }
         });
         return removeListener;
-    },[data]);
+    },[datastring]);
 
     React.useEffect(()=>{
         const removeListener=props.electronAPI.on(ipcToMainChannels.restoreDefaults,()=>{
@@ -82,7 +89,7 @@ export const App:React.FC<IAppProps> = (props) => {
             setData(null);
         });
         return removeListener;
-    },[data]);
+    },[datastring]);
 
 
     const theme: ITheme = {
@@ -101,7 +108,7 @@ export const App:React.FC<IAppProps> = (props) => {
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
                     </MainPane>
                     <SidePane>
-                        <VoiceProfileSelect data={data}></VoiceProfileSelect>
+                        <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile}></VoiceProfileSelect>
                     </SidePane>
                 </OuterDiv>
             </ThemeProvider> : null;

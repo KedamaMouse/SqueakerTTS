@@ -6,6 +6,7 @@ import styled, { css } from "styled-components";
 interface IVoiceProfileSelectProps
 {
     data: IData;
+    setActiveVoiceProfile: (key:string) => void;
 }
 
 export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => {
@@ -16,18 +17,15 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
     for (const profileKey in props.data.voiceProfiles)
     {
         const profile =props.data.voiceProfiles[profileKey];
-        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
+        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} setActiveVoiceProfile={props.setActiveVoiceProfile} 
+            selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
     }
 
     return <>{widgets}</>
 }
 
 
-interface IVoiceProfileWidgetProps
-{
-    voiceProfile: IVoiceProfile;
-    selected: boolean;
-}
+
 
 interface OuterDivProps
 {
@@ -53,10 +51,19 @@ const NameDiv=styled.div`
 const Label=styled.label`
     color: ${props => props.theme.labelTextColor};
 `
+interface IVoiceProfileWidgetProps
+{
+    voiceProfile: IVoiceProfile;
+    selected: boolean;
+    setActiveVoiceProfile: (key:string) => void;
+
+}
 
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
-    return <OuterDiv activeProfile={props.selected} >
+    const onClick = React.useCallback(()=>{props.setActiveVoiceProfile(props.voiceProfile.key)},[props.setActiveVoiceProfile]);
+
+    return <OuterDiv onClick={onClick } activeProfile={props.selected} >
         <NameDiv>{props.voiceProfile.key}</NameDiv>
         <div><Label>voice: </Label> {props.voiceProfile.voice}</div>
         <div><Label>vocal length: </Label>{props.voiceProfile.vocalLength}</div>

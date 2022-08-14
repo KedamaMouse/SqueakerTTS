@@ -14,22 +14,22 @@ interface IVoiceOptions
 
 export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
     
-    const onVocalLengthChange = React.useCallback((value: number)=>
+    const onVocalLengthChange =(value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "vocalLength": value});
 
-    },[props.voiceProfile]);
+    };
 
-    const onPitchChange = React.useCallback((value: number)=>
+    const onPitchChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "pitch": value});
 
-    },[props.voiceProfile]);
+    };
 
-    const onRateChange = React.useCallback((value: number)=>
+    const onRateChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "rate": value});
-    },[props.voiceProfile]);
+    };
 
     if(!props.voiceProfile){return <></>}
 
