@@ -1,6 +1,6 @@
 import { IData, IVoiceProfile } from "../../ICommonInterfaces";
 import * as React from 'react';
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 
 interface IVoiceProfileSelectProps
@@ -16,9 +16,8 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
     for (const profileKey in props.data.voiceProfiles)
     {
         const profile =props.data.voiceProfiles[profileKey];
-        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey}></VoiceProfleWidget>);
+        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
     }
-
 
     return <>{widgets}</>
 }
@@ -27,13 +26,24 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
 interface IVoiceProfileWidgetProps
 {
     voiceProfile: IVoiceProfile;
+    selected: boolean;
 }
 
-const OuterDiv = styled.div`
+interface OuterDivProps
+{
+    activeProfile: boolean;
+}
+
+const OuterDiv = styled.div<OuterDivProps>`
     font-size: 12px;
     margin: 5px;
     padding: 5px;
     background-color: ${props => props.theme.editBackColor};
+    ${props => props.activeProfile && css`
+        border-style: solid;
+        border-width: 2px;
+        border-color: ${props => props.theme.activeBorderColor};
+    `};
 `;
 
 const NameDiv=styled.div`
@@ -46,7 +56,7 @@ const Label=styled.label`
 
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
-    return <OuterDiv>
+    return <OuterDiv activeProfile={props.selected} >
         <NameDiv>{props.voiceProfile.key}</NameDiv>
         <div><Label>voice: </Label> {props.voiceProfile.voice}</div>
         <div><Label>vocal length: </Label>{props.voiceProfile.vocalLength}</div>
