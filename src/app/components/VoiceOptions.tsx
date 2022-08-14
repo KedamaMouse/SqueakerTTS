@@ -3,6 +3,7 @@ import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, voc
 
 import { VoiceList } from './VoiceList';
 import {Slider, VolumeSlider } from './Sliders';
+import { SaveAsButton } from './SaveAsButton';
 
 interface IVoiceOptions
 {
@@ -38,6 +39,6 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
         <Slider min={vocalLengthMin} max={vocalLengthMax} value={props.voiceProfile.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
         <Slider min={pitchMin} max={pitchMax} value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/>
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
-        
+        <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile}></SaveAsButton>
     </>
 }
