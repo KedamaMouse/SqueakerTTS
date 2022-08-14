@@ -20,9 +20,9 @@ interface IVoiceListProps
 export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
     const [voices,setVoices] = React.useState<Array<IVoice>>();
-    const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = React.useCallback((event): void=>{
+    const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = (event): void=>{
         props.setvoiceProfile({...props.voiceProfile, "voice": event.target.value});
-    },[]);
+    };
 
     if(!voices)
     {

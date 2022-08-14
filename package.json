@@ -6,7 +6,7 @@
   "scripts": {
     "build:react": "webpack --mode development --config webpack.react.config.js",
     "build": "webpack --mode development",
-    "start": "electron .",
+    "start": "electron --remote-debugging-port=9222 .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "package-win": "electron-packager . SqueakerTTS --overwrite --asar=true --platform=win32 --arch=ia32 --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"SqueakerTTS\""
   },

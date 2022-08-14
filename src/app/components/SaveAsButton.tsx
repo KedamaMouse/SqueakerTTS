@@ -32,7 +32,7 @@ export const SaveAsButton:React.FC<ISaveAsButtonProps> = (props) => {
     {
         return <>
         <form onSubmit={onSubmit}>
-            <input type="text" value={newName} onChange={onChange} />
+            <input type="text" value={newName} onChange={onChange} autoFocus />
         </form>
         <Button onClick={toggleSaving}>Cancel</Button></>
     }
