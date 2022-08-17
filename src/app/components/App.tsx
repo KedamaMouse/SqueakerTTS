@@ -125,7 +125,9 @@ const OuterDiv= styled.div`
 `
 const MainPane=styled.div`
       flex-grow: 1;
+
 `
 const SidePane=styled.div`
     flex-shrink: 1;
+    overflow-y: auto;
 `
