@@ -15,6 +15,7 @@ interface IAppProps
 export const App:React.FC<IAppProps> = (props) => {
    
     const [data,setData]= React.useState<IData>(null);
+    const [needToAssignFocus,setNeedToAssignFocus] = React.useState<boolean>(false);
 
     const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
 
@@ -110,8 +111,9 @@ export const App:React.FC<IAppProps> = (props) => {
     return  data ? <ThemeProvider theme={theme}>
                 <OuterDiv> 
                     <MainPane>
-                        <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} />
-                        <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
+                        <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
+                        <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
+                            setvoiceProfile={updateVoiceProfile} setNeedToAssignFocus={setNeedToAssignFocus}/>
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile} 
