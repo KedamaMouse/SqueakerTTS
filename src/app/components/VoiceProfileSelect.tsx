@@ -1,6 +1,7 @@
 import { IData, IVoiceProfile } from "../../ICommonInterfaces";
 import * as React from 'react';
 import styled, { css } from "styled-components";
+import { GlobalHotKeys } from "react-hotkeys";
 
 
 interface IVoiceProfileSelectProps
@@ -14,16 +15,32 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
 
 
     const widgets:React.ReactElement[] =[];
+    const keyMap:{[key: string]: string} = {}
+    const handlers:{[key: string]: (keyEvent?: KeyboardEvent) => void;} = {}
 
+
+    let index=1;
     for (const profileKey in props.data.voiceProfiles)
     {
+        let hotkey="";
+        if(index < 10){
+            hotkey="alt+"+index;
+            keyMap["setVoice"+index]=hotkey;
+            handlers["setVoice"+index]=()=>{
+                 props.setActiveVoiceProfile(profileKey);
+            }
+         }
+         index++;
+
         const profile =props.data.voiceProfiles[profileKey];
-        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} 
+        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} hotkey={hotkey}
             setActiveVoiceProfile={props.setActiveVoiceProfile} removeVoiceProfile={props.removeVoiceProfile}
             selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
+        
+
     }
 
-    return <>{widgets}</>
+    return <><GlobalHotKeys keyMap={keyMap} handlers={handlers} allowChanges/>{widgets}</>
 }
 
 
@@ -54,6 +71,7 @@ interface IVoiceProfileWidgetProps
     selected: boolean;
     setActiveVoiceProfile: (key:string) => void;
     removeVoiceProfile: (key:string) => void;
+    hotkey: string;
 }
 
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
@@ -69,6 +87,7 @@ const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
     return <OuterDiv onClick={onClick } activeProfile={props.selected} >
         <TopRow>
             <NameSpan>{props.voiceProfile.key}</NameSpan>
+            {props.hotkey ? <span>({props.hotkey})</span> : null}
             {!props.selected ? <RemoveButton title="Remove" onClick={onRemove}>X</RemoveButton> : null }
             <ClearFloat/>
 

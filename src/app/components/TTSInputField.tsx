@@ -6,6 +6,8 @@ interface IAppProps
 {
     electronAPI : IElectrionAPI;
     voiceProfile: IVoiceProfile;
+    setNeedToAssignFocus : (value: boolean)=> void;
+    takeFocus: boolean;
 }
 
 const TextArea = styled.textarea`
@@ -15,6 +17,7 @@ const TextArea = styled.textarea`
 
 export const TTSInputField:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
+    const textArea = React.useRef<HTMLTextAreaElement>();
     
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
@@ -46,5 +49,14 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
         
     },[submitText]);
 
-    return <TextArea autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} />
+    React.useEffect(()=>{
+        if(props.takeFocus && textArea.current)
+        {
+            textArea.current.focus();
+            props.setNeedToAssignFocus(false);
+        }
+    },[props.takeFocus,textArea.current,props.setNeedToAssignFocus]);
+
+
+    return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} ref={textArea} />
 }
