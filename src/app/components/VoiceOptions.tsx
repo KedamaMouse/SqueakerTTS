@@ -3,32 +3,34 @@ import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, voc
 
 import { VoiceList } from './VoiceList';
 import {Slider, VolumeSlider } from './Sliders';
+import { SaveAsButton } from './SaveAsButton';
 
 interface IVoiceOptions
 {
     electronAPI : IElectrionAPI;
     voiceProfile: IVoiceProfile;
     setvoiceProfile: (value: IVoiceProfile) =>void;
+    setNeedToAssignFocus : (value: boolean)=> void;
 }
 
 export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
     
-    const onVocalLengthChange = React.useCallback((value: number)=>
+    const onVocalLengthChange =(value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "vocalLength": value});
 
-    },[props.voiceProfile]);
+    };
 
-    const onPitchChange = React.useCallback((value: number)=>
+    const onPitchChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "pitch": value});
 
-    },[props.voiceProfile]);
+    };
 
-    const onRateChange = React.useCallback((value: number)=>
+    const onRateChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "rate": value});
-    },[props.voiceProfile]);
+    };
 
     if(!props.voiceProfile){return <></>}
 
@@ -38,5 +40,6 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
         <Slider min={vocalLengthMin} max={vocalLengthMax} value={props.voiceProfile.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/>
         <Slider min={pitchMin} max={pitchMax} value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/>
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
+        <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
     </>
 }

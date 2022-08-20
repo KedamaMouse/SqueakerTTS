@@ -1,5 +1,6 @@
 import * as React from 'react';
 import ReactSlider from 'react-slider';
+import styled from 'styled-components';
 import { IElectrionAPI } from "../../ICommonInterfaces";
 
 interface IVolumeSliderProps
@@ -31,9 +32,33 @@ interface ISliderProps
 
 export const Slider:React.FC<ISliderProps> = (props) =>
 {
-    return <div className='sliderContainer'><label>{props.label}</label><ReactSlider value={props.value} onAfterChange={props.setValue} className='sliderSlider' trackClassName='volumeSliderTrack' thumbClassName='volumeSliderThumb'
-    renderThumb={(props, state) => <div {...props}>{state.valueNow}</div>} min={props.min} max={props.max} /></div>   
+    return <SliderContainer>
+        <label>{props.label}</label>
+        <StyledSlider><ReactSlider value={props.value} onAfterChange={props.setValue}
+        renderTrack={(props, state) => <div {...props}><TrackDiv></TrackDiv></div>}
+    renderThumb={(props, state) => <div {...props}><ThumbDiv>{state.valueNow}</ThumbDiv></div>} min={props.min} max={props.max} /></StyledSlider>
+    </SliderContainer>   
 }
+
+const SliderContainer= styled.div`
+    display: flex;
+`
+
+const StyledSlider= styled.div`
+    flex-grow: 1;
+    margin-left: 10px;
+`
+const ThumbDiv = styled.div`
+    background-color: ${props => props.theme.sliderThumbBackColor};
+    color: ${props => props.theme.sliderThumbTextColor};
+    border-radius: 25px;
+`
+const TrackDiv = styled.div`
+    height: 10px;
+    margin-top: 5px;
+    background-color:  ${props => props.theme.editBackColor};
+`
+
 
 
 export function parseIntSetting(key: string, min: number, max: number, initialValue: number): number

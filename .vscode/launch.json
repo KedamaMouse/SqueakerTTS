@@ -3,21 +3,35 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-        
-        
+    "configurations": [        
         {
-            "type": "node",
+            "command": "npm start",
+            "name": "Run npm start",
             "request": "launch",
-            "name": "Launch Program",
+            "type": "node-terminal"
+        },
+        {
+            "name": "Attach by Process ID",
+            "processId": "${command:PickProcess}",
+            "request": "attach",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\src\\main.ts",
-            "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": [
-                "${workspaceFolder}/dist/**/*.js"
-            ]
-        }
+            "type": "node"
+        },
+        {
+            "type": "chrome",
+            "request": "attach",
+            "name": "Attach to Render process",
+            "port": 9222,
+            "webRoot": "${workspaceRoot}/html",
+            "sourceMaps": true,
+            "sourceMapPathOverrides": {
+              "webpack:///render/*": "${workspaceRoot}/render/*",
+              "webpack:///./render/*": "${workspaceRoot}/render/*"
+            }
+          }
+  
+        
     ]
 }
