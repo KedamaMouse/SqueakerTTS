@@ -29,7 +29,7 @@ ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
 const createWindow = () => {
-  window = new BrowserWindow({ width: 500, height: 600 ,webPreferences: {
+  window = new BrowserWindow({ width: 800, height: 600 ,webPreferences: {
     devTools: true,
     nodeIntegration: false,
     nodeIntegrationInWorker: false,

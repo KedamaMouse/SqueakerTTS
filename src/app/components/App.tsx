@@ -18,7 +18,7 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
 
-    //
+    //this is not the best pattern, but fine as long as our data remains small.
     const datastring= JSON.stringify(data); 
 
     const updateVoiceProfile: (value: IVoiceProfile) => void = React.useCallback((value)=>
@@ -29,6 +29,12 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const setActiveVoiceProfile: (key: string) => void = React.useCallback((key)=>{
         setData({...data,voiceProfiles:{...data?.voiceProfiles}, activeVoiceKey: key});
+    },[datastring]);
+
+    const removeVoiceProfile:(key: string) => void = React.useCallback((key)=>{
+        const newData = {...data,voiceProfiles:{...data?.voiceProfiles}};
+        delete newData.voiceProfiles[key];
+        setData(newData);
     },[datastring]);
 
     //Load and save data
@@ -108,7 +114,8 @@ export const App:React.FC<IAppProps> = (props) => {
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} setvoiceProfile={updateVoiceProfile}/>
                     </MainPane>
                     <SidePane>
-                        <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile}></VoiceProfileSelect>
+                        <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile} 
+                            removeVoiceProfile={removeVoiceProfile}/>
                     </SidePane>
                 </OuterDiv>
             </ThemeProvider> : null;
@@ -118,16 +125,19 @@ export const App:React.FC<IAppProps> = (props) => {
 const OuterDiv= styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
+    height: calc(100vh - 16px);
     background-color: ${props => props.theme.appBackColor};
     padding: 8px;
     box-sizing: border-box;
 `
 const MainPane=styled.div`
-      flex-grow: 1;
+      flex-grow: 0;
+      flex-basis: 300px;
+      margin-right: 10px;
 
 `
 const SidePane=styled.div`
-    flex-shrink: 1;
+    flex-grow: 1;
     overflow-y: auto;
+    height: 100%;
 `

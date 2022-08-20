@@ -7,6 +7,7 @@ interface IVoiceProfileSelectProps
 {
     data: IData;
     setActiveVoiceProfile: (key:string) => void;
+    removeVoiceProfile: (key:string) => void;
 }
 
 export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => {
@@ -17,7 +18,8 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
     for (const profileKey in props.data.voiceProfiles)
     {
         const profile =props.data.voiceProfiles[profileKey];
-        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} setActiveVoiceProfile={props.setActiveVoiceProfile} 
+        widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} 
+            setActiveVoiceProfile={props.setActiveVoiceProfile} removeVoiceProfile={props.removeVoiceProfile}
             selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
     }
 
@@ -41,33 +43,69 @@ const OuterDiv = styled.div<OuterDivProps>`
         border-style: solid;
         border-width: 2px;
         border-color: ${props => props.theme.activeBorderColor};
+        margin: 3px;
     `};
 `;
 
-const NameDiv=styled.div`
-    font-weight: bold;
-`;
 
-const Label=styled.label`
-    color: ${props => props.theme.labelTextColor};
-`
 interface IVoiceProfileWidgetProps
 {
     voiceProfile: IVoiceProfile;
     selected: boolean;
     setActiveVoiceProfile: (key:string) => void;
-
+    removeVoiceProfile: (key:string) => void;
 }
 
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
     const onClick = React.useCallback(()=>{props.setActiveVoiceProfile(props.voiceProfile.key)},[props.setActiveVoiceProfile]);
 
+    const onRemove:React.MouseEventHandler<HTMLButtonElement> = (event)=>{ 
+        props.removeVoiceProfile(props.voiceProfile.key);    
+        event.stopPropagation();
+    }
+
+
     return <OuterDiv onClick={onClick } activeProfile={props.selected} >
-        <NameDiv>{props.voiceProfile.key}</NameDiv>
-        <div><Label>voice: </Label> {props.voiceProfile.voice}</div>
-        <div><Label>vocal length: </Label>{props.voiceProfile.vocalLength}</div>
-        <div><Label>pitch: </Label>{props.voiceProfile.pitch}</div>
-        <div><Label>rate: </Label>{props.voiceProfile.rate}</div> 
+        <TopRow>
+            <NameSpan>{props.voiceProfile.key}</NameSpan>
+            {!props.selected ? <RemoveButton title="Remove" onClick={onRemove}>X</RemoveButton> : null }
+            <ClearFloat/>
+
+        </TopRow>
+        <FlexContainer>
+            <FlexItem><Label>voice: </Label> {props.voiceProfile.voice}</FlexItem>
+            <FlexItem><Label>vocal length: </Label>{props.voiceProfile.vocalLength}</FlexItem>
+            <FlexItem><Label>pitch: </Label>{props.voiceProfile.pitch}</FlexItem>
+            <FlexItem><Label>rate: </Label>{props.voiceProfile.rate}</FlexItem> 
+        </FlexContainer>
     </OuterDiv>
 }
+
+const TopRow = styled.div`
+    
+`
+const RemoveButton = styled.button`
+    float: right;
+    font-size: 10px;
+`
+const ClearFloat= styled.div`
+    clear: both;
+`
+
+const NameSpan=styled.span`
+    font-weight: bold;
+    line-height: 17px;
+`;
+
+const Label=styled.label`
+    color: ${props => props.theme.labelTextColor};
+`
+
+const FlexContainer=styled.div`
+    display: flex;
+    flex-wrap: wrap;
+`
+const FlexItem=styled.div`
+    margin-right: 6px;
+`
