@@ -31,10 +31,11 @@ export const SaveAsButton:React.FC<ISaveAsButtonProps> = (props) => {
     if(startedSaving)
     {
         return <>
-        <form onSubmit={onSubmit}>
-            <input type="text" value={newName} onChange={onChange} autoFocus />
-        </form>
-        <Button onClick={toggleSaving}>Cancel</Button></>
+            <NameForm onSubmit={onSubmit}>
+                <input type="text" value={newName} onChange={onChange} autoFocus />
+            </NameForm>
+            <Button onClick={toggleSaving}>Cancel</Button>
+        </>
     }
     else{
         return <>
@@ -44,5 +45,8 @@ export const SaveAsButton:React.FC<ISaveAsButtonProps> = (props) => {
 }
 
 const Button = styled.button`
-
 `;
+
+const NameForm = styled.form`
+    display: inline;
+`
