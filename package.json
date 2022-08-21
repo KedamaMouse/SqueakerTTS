@@ -1,5 +1,5 @@
 {
-  "name": "easytts",
+  "name": "SqueakerTTS",
   "version": "1.0.0",
   "description": "",
   "main": "./dist/main.js",
@@ -12,15 +12,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/KedamaMouse/easyTTS.git"
+    "url": "git+https://github.com/KedamaMouse/SqueakerTTS.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/KedamaMouse/easyTTS/issues"
+    "url": "https://github.com/KedamaMouse/SqueakerTTS/issues"
   },
-  "homepage": "https://github.com/KedamaMouse/easyTTS#readme",
+  "homepage": "https://github.com/KedamaMouse/SqueakerTTS#readme",
   "devDependencies": {
     "@babel/cli": "^7.18.6",
     "@babel/core": "^7.18.6",
