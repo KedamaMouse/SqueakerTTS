@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../ICommonInterfaces';
+import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../../ICommonInterfaces';
+import { InputHistory } from './InputHistory';
 
 interface IAppProps
 {
@@ -10,14 +11,11 @@ interface IAppProps
     takeFocus: boolean;
 }
 
-const TextArea = styled.textarea`
-    width:  calc(100% - 10px);
-    background-color: ${props => props.theme.editBackColor};
-`
-
 export const TTSInputField:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
     const textArea = React.useRef<HTMLTextAreaElement>();
+    const [inputHistory,setInputHistory] = React.useState<InputHistory>(new InputHistory());
+    inputHistory.saveChanges=setInputHistory;
     
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
@@ -34,20 +32,26 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
             voice: props.voiceProfile.voice
         };
         props.electronAPI.speak(request);
+        inputHistory.addEntry(request.text);
         setText("");
-    },[text]); 
+    },[text,inputHistory]); 
 
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
-        if(event.key=== "Enter")
+        switch(event.key)
         {
-            submitText();
-        }
-        else if(event.key === "Escape")
-        {
-            props.electronAPI.sendTTSCommand("stop");
+            case "Enter":
+                submitText();
+                break;
+            case "Escape":
+                props.electronAPI.sendTTSCommand("stop");
+                break;
+            case "ArrowUp": 
+            case "ArrowDown":
+                const dir = (event.key === "ArrowUp") ? 1 : -1;
+                setText(inputHistory.getNextEntry(text,dir));
         }
         
-    },[submitText]);
+    },[submitText,inputHistory]);
 
     React.useEffect(()=>{
         if(props.takeFocus && textArea.current)
@@ -60,3 +64,8 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
 
     return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} ref={textArea} />
 }
+
+const TextArea = styled.textarea`
+    width:  calc(100% - 6px);
+    background-color: ${props => props.theme.editBackColor};
+`

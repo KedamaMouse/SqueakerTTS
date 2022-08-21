@@ -1,7 +1,6 @@
 import * as React from 'react';
-import { GlobalHotKeys } from 'react-hotkeys';
 import styled from 'styled-components';
-import { IVoiceProfile } from '../../ICommonInterfaces';
+import { IVoiceProfile } from '../../../ICommonInterfaces';
 
 interface ISaveAsButtonProps
 {

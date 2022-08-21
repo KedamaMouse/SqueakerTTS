@@ -3,8 +3,8 @@ import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
 import { ITheme } from '../theme';
-import { TTSInputField } from './TTSInputField';
-import { VoiceOptions } from './VoiceOptions';
+import { TTSInputField } from './inputField/TTSInputField';
+import { VoiceOptions } from './voiceOptions/VoiceOptions';
 import { VoiceProfileSelect } from './VoiceProfileSelect';
 
 interface IAppProps
@@ -105,7 +105,7 @@ export const App:React.FC<IAppProps> = (props) => {
         sliderThumbBackColor: "rgb(78, 113, 85)",
         sliderThumbTextColor: "white",
         labelTextColor: "rgb(72,72,72)",
-        activeBorderColor: "black",
+        selectedBorderColor: "rgb(72,255,10)",
       };
 
     return  data ? <ThemeProvider theme={theme}>

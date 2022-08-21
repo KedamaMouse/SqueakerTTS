@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IElectrionAPI, IVoiceProfile } from "../../ICommonInterfaces";
+import { IElectrionAPI, IVoiceProfile } from "../../../ICommonInterfaces";
 
 interface IVoice
 {
