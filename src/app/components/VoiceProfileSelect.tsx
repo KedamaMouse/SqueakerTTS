@@ -59,7 +59,7 @@ const OuterDiv = styled.div<OuterDivProps>`
     ${props => props.activeProfile && css`
         border-style: solid;
         border-width: 2px;
-        border-color: ${props => props.theme.activeBorderColor};
+        border-color: ${props => props.theme.selectedBorderColor};
         margin: 3px;
     `};
 `;

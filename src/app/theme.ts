@@ -5,5 +5,6 @@ export interface ITheme
     sliderThumbBackColor: string;
     sliderThumbTextColor: string;
     labelTextColor: string;
-    activeBorderColor: string;
+    selectedBorderColor: string;
+    
 }
