@@ -3,8 +3,8 @@ import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
 import { ITheme } from '../theme';
-import { TTSInputField } from './TTSInputField';
-import { VoiceOptions } from './VoiceOptions';
+import { TTSInputField } from './inputField/TTSInputField';
+import { VoiceOptions } from './voiceOptions/VoiceOptions';
 import { VoiceProfileSelect } from './VoiceProfileSelect';
 
 interface IAppProps

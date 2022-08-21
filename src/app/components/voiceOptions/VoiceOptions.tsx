@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, vocalLengthMax, vocalLengthMin } from "../../ICommonInterfaces";
+import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, vocalLengthMax, vocalLengthMin } from "../../../ICommonInterfaces";
 
 import { VoiceList } from './VoiceList';
 import {Slider, VolumeSlider } from './Sliders';

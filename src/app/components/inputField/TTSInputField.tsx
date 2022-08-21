@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../ICommonInterfaces';
+import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../../ICommonInterfaces';
+import { InputHistory } from './InputHistory';
 
 interface IAppProps
 {
@@ -10,17 +11,11 @@ interface IAppProps
     takeFocus: boolean;
 }
 
-interface IInputHistory
-{
-    inputArray: string[];
-    position: number;
-    unsavedInput: string;    
-}
-
 export const TTSInputField:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
     const textArea = React.useRef<HTMLTextAreaElement>();
-    const [inputHistory,setInputHistory] = React.useState<IInputHistory>({inputArray:[], position: 0, unsavedInput: ""});
+    const [inputHistory,setInputHistory] = React.useState<InputHistory>(new InputHistory());
+    inputHistory.saveChanges=setInputHistory;
     
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
@@ -37,15 +32,7 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
             voice: props.voiceProfile.voice
         };
         props.electronAPI.speak(request);
-        if(request.text !== inputHistory.inputArray[inputHistory.inputArray.length-1]){
-            inputHistory.inputArray.push(request.text);
-        }
-        inputHistory.position=0;
-        if(inputHistory.inputArray.length > 10)
-        {
-            inputHistory.inputArray.shift();
-        }
-        setInputHistory(inputHistory);
+        inputHistory.addEntry(request.text);
         setText("");
     },[text,inputHistory]); 
 
@@ -60,27 +47,8 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
                 break;
             case "ArrowUp": 
             case "ArrowDown":
-                if(inputHistory.inputArray.length > 0)
-                {
-                    const dir = (event.key === "ArrowUp") ? 1 : -1;
-                    if(inputHistory.position === 0)//0 means on a new unsubmitted input, not in the array.
-                    {
-                        inputHistory.unsavedInput= text;
-                        
-                    }
-                    const totalInputs=inputHistory.inputArray.length+1;
-                    inputHistory.position= (inputHistory.position+dir+totalInputs) % totalInputs;
-                    if(inputHistory.position === 0)
-                    {
-                        setText(inputHistory.unsavedInput);
-                    }
-                    else
-                    {
-                        setText(inputHistory.inputArray[inputHistory.inputArray.length-inputHistory.position]);
-                    }
-                    setInputHistory(inputHistory);
-                }
-
+                const dir = (event.key === "ArrowUp") ? 1 : -1;
+                setText(inputHistory.getNextEntry(text,dir));
         }
         
     },[submitText,inputHistory]);
