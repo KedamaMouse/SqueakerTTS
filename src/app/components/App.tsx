@@ -101,6 +101,7 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const theme: ITheme = {
         editBackColor:  "rgb(247, 217, 247)",
+        appBackTextColor: "white",
         appBackColor:"rgb(159, 109, 159)",
         sliderThumbBackColor: "rgb(78, 113, 85)",
         sliderThumbTextColor: "white",

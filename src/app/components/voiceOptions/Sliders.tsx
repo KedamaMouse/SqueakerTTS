@@ -33,12 +33,16 @@ interface ISliderProps
 export const Slider:React.FC<ISliderProps> = (props) =>
 {
     return <SliderContainer>
-        <label>{props.label}</label>
+        <Label>{props.label}</Label>
         <StyledSlider><ReactSlider value={props.value} onAfterChange={props.setValue}
         renderTrack={(props, state) => <div {...props}><TrackDiv></TrackDiv></div>}
     renderThumb={(props, state) => <div {...props}><ThumbDiv>{state.valueNow}</ThumbDiv></div>} min={props.min} max={props.max} /></StyledSlider>
     </SliderContainer>   
 }
+
+const Label= styled.label`
+    color: ${props => props.theme.appBackTextColor};
+`
 
 const SliderContainer= styled.div`
     display: flex;
