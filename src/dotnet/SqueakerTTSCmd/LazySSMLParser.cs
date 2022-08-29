@@ -54,11 +54,33 @@ namespace LazySSMLParser
                 {
                     case LazySSMLToken.LParen:
                         string tag = token.ToStringValue().Remove(token.ToStringValue().Length - 1);
-                        if (tag.Equals("w")) 
+                        if (tag.Equals("w"))
                         {
-                            output=output+ "<amazon:effect name=\"whispered\">";
+                            output = output + "<amazon:effect name=\"whispered\">";
                             closingTagStack.Push("</amazon:effect>");
                         }
+                        else if (tag.Equals("ee")) 
+                        {
+                            output = output + "<emphasis level=\"strong\">";
+                            closingTagStack.Push("</emphasis>");
+                        }
+                        else if (tag.Equals("e"))
+                        {
+                            output = output + "<emphasis level=\"moderate\">";
+                            closingTagStack.Push("</emphasis>");
+                        }
+                        else if (tag.Equals("r"))
+                        {
+                            output = output + "<emphasis level=\"reduced\">";
+                            closingTagStack.Push("</emphasis>");
+                        }
+                        else if (tag.Equals("s"))
+                        {
+                            output = output + "<amazon:effect phonation=\"soft\">";
+                            closingTagStack.Push("</amazon:effect>");
+                        }
+
+
                         break;
                     case LazySSMLToken.RParen:
                         if (closingTagStack.Count > 0)
