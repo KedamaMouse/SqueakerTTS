@@ -4,6 +4,7 @@ import { IElectrionAPI, IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, voc
 import { VoiceList } from './VoiceList';
 import {Slider, VolumeSlider } from './Sliders';
 import { SaveAsButton } from './SaveAsButton';
+import { Checkbox, Label } from '../CommonStyledComponents';
 
 interface IVoiceOptions
 {
@@ -18,18 +19,20 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
     const onVocalLengthChange =(value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "vocalLength": value});
-
     };
 
     const onPitchChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "pitch": value});
-
     };
 
     const onRateChange = (value: number)=>
     {
         props.setvoiceProfile({...props.voiceProfile, "rate": value});
+    };
+    const onAutoBreathToggle= () =>
+    {
+        props.setvoiceProfile({...props.voiceProfile, "autoBreaths": !props.voiceProfile.autoBreaths});
     };
 
     if(!props.voiceProfile){return <></>}
@@ -41,5 +44,6 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
         <Slider min={pitchMin} max={pitchMax} value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/>
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
         <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
+        <Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox>
     </>
 }

@@ -4,6 +4,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
 import { ITheme } from '../theme';
 import { TTSInputField } from './inputField/TTSInputField';
+import { Instructions } from './instructions';
 import { VoiceOptions } from './voiceOptions/VoiceOptions';
 import { VoiceProfileSelect } from './VoiceProfileSelect';
 
@@ -115,6 +116,7 @@ export const App:React.FC<IAppProps> = (props) => {
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                             setvoiceProfile={updateVoiceProfile} setNeedToAssignFocus={setNeedToAssignFocus}/>
+                        <Instructions/>
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile} 

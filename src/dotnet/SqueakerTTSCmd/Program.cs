@@ -113,6 +113,11 @@ public class SqueakerTTSCmd {
 
             }
 
+            if (request.autoBreaths) 
+            {
+                request.text = "<amazon:auto-breaths>" + request.text + "</amazon:auto-breaths>";
+            }
+
             request.text = "<speak>" + request.text + "</speak>";
             synthesizer.Speak(request.text);
         }
@@ -193,5 +198,7 @@ public class SqueakerTTSCmd {
         public int rate { get; set; }
 
         public string? voice { get; set; }
+
+        public bool autoBreaths { get; set; }
     }
 }

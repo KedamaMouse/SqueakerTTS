@@ -2,6 +2,7 @@ import * as React from 'react';
 import ReactSlider from 'react-slider';
 import styled from 'styled-components';
 import { IElectrionAPI } from "../../../ICommonInterfaces";
+import { Label } from '../CommonStyledComponents';
 
 interface IVolumeSliderProps
 {
@@ -40,9 +41,7 @@ export const Slider:React.FC<ISliderProps> = (props) =>
     </SliderContainer>   
 }
 
-const Label= styled.label`
-    color: ${props => props.theme.appBackTextColor};
-`
+
 
 const SliderContainer= styled.div`
     display: flex;
