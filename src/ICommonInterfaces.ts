@@ -20,6 +20,7 @@ export interface ITTSRequest {
     pitch: number;
     rate: number;
     voice: string;
+    autoBreaths: boolean;
 }
 
 export interface IData 
@@ -36,6 +37,7 @@ export interface IVoiceProfile
     vocalLength: number;
     pitch: number;
     rate: number;
+    autoBreaths?: boolean;
 }
 
 export const vocalLengthMin=50;

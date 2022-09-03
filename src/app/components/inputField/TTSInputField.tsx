@@ -29,7 +29,8 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
             pitch: props.voiceProfile.pitch,
             rate: props.voiceProfile.rate,
             vocalLength: props.voiceProfile.vocalLength,
-            voice: props.voiceProfile.voice
+            voice: props.voiceProfile.voice,
+            autoBreaths: props.voiceProfile.autoBreaths
         };
         props.electronAPI.speak(request);
         inputHistory.addEntry(request.text);
