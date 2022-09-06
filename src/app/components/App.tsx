@@ -131,7 +131,7 @@ export const App:React.FC<IAppProps> = (props) => {
 const OuterDiv= styled.div`
     display: flex;
     width: 100%;
-    height: calc(100vh - 16px);
+    height: 100%;
     background-color: ${props => props.theme.appBackColor};
     padding: 8px;
     box-sizing: border-box;
