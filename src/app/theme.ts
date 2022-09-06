@@ -7,4 +7,5 @@ export interface ITheme
     sliderThumbTextColor: string;
     labelTextColor: string;
     selectedBorderColor: string;
+    errorColor: string;
 }

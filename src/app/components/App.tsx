@@ -108,6 +108,7 @@ export const App:React.FC<IAppProps> = (props) => {
         sliderThumbTextColor: "white",
         labelTextColor: "rgb(72,72,72)",
         selectedBorderColor: "rgb(72,255,10)",
+        errorColor: "#f1ff3b"
       };
 
     return  data ? <ThemeProvider theme={theme}>
@@ -116,7 +117,7 @@ export const App:React.FC<IAppProps> = (props) => {
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                             setvoiceProfile={updateVoiceProfile} setNeedToAssignFocus={setNeedToAssignFocus}/>
-                        <Instructions/>
+                        <Instructions electronAPI={props.electronAPI}/>
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile} 

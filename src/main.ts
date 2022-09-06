@@ -2,13 +2,13 @@ const url = require("url");
 const path = require("path");
 const fs = require('fs');
 
-import { app, BrowserWindow, ipcMain, Menu } from "electron";
-import { ConnectionBuilder } from "electron-cgi";
+import { app, BrowserWindow, Menu } from "electron";
+import { ConnectionHandler } from "./ConnectionHandler";
 import { GetMenuTemplate } from "./electronMenu";
 
 let window: BrowserWindow | null;
 
-let exepath=path.join(path.dirname(app.getPath("exe")),"bin\\SqueakerTTSCmd.exe");;
+export let exepath=path.join(path.dirname(app.getPath("exe")),"bin\\SqueakerTTSCmd.exe");;
 if(!fs.existsSync(exepath)) //different file path when not packaged.
 {
   exepath=path.join(__dirname,"bin\\SqueakerTTSCmd.exe");
@@ -17,14 +17,6 @@ if(!fs.existsSync(exepath))
 {
   app.quit();
 }
-
-let connection =new ConnectionBuilder().connectTo(exepath, "--connect").build();
-
-
-ipcMain.handle("sendTTSCommand",(_event,command,arg)=>
-{
-  return connection.send(command,arg);
-});
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
@@ -47,9 +39,10 @@ const createWindow = () => {
       slashes: true
     })
   );
-
+  const connection =new ConnectionHandler(window);
   window.on("closed", () => {
     window = null;
+    connection.destroy();
   });
 };
 
@@ -57,6 +50,7 @@ app.on("ready", createWindow);
 
 
 app.on("window-all-closed", () => {
+  
   if (process.platform !== "darwin") {
     app.quit();
   }

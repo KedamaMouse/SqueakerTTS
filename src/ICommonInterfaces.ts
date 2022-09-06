@@ -12,6 +12,7 @@ export enum ipcToMainChannels
     import = "import",
     export = "export",
     restoreDefaults = "restoreDefaults",
+    errorReconnect = "errorReconnect",
 }
 
 export interface ITTSRequest {
