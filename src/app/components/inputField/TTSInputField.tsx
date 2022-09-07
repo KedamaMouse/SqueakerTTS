@@ -14,9 +14,8 @@ interface IAppProps
 export const TTSInputField:React.FC<IAppProps> = (props) => {
     const [text,setText] = React.useState<string>("");
     const textArea = React.useRef<HTMLTextAreaElement>();
-    const [inputHistory,setInputHistory] = React.useState<InputHistory>(new InputHistory());
-    inputHistory.saveChanges=setInputHistory;
-    
+    const inputHistory = React.useState<InputHistory>(new InputHistory())[0];
+
     const handleChange:React.ChangeEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         setText(event.target.value);
     },[setText]);
@@ -35,7 +34,7 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
         props.electronAPI.speak(request);
         inputHistory.addEntry(request.text);
         setText("");
-    },[text,inputHistory]); 
+    },[text]); 
 
     const onKeyUp:React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
         switch(event.key)
@@ -52,7 +51,7 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
                 setText(inputHistory.getNextEntry(text,dir));
         }
         
-    },[submitText,inputHistory]);
+    },[submitText]);
 
     React.useEffect(()=>{
         if(props.takeFocus && textArea.current)

@@ -2,8 +2,6 @@ export class InputHistory {
     inputArray: string[] = [];
     position: number = 0;
     unsavedInput: string = "";
-
-    public saveChanges: React.Dispatch<React.SetStateAction<InputHistory>>;
     
     public addEntry(text: string): void {
         if (text !== this.inputArray[this.inputArray.length - 1]) {
@@ -13,7 +11,6 @@ export class InputHistory {
         if (this.inputArray.length > 10) {
             this.inputArray.shift();
         }
-        this.saveChanges(this);
     }
 
     public getNextEntry(curText: string, dir: number): string {
@@ -36,7 +33,6 @@ export class InputHistory {
         else {
             ret= this.inputArray[this.inputArray.length - this.position];
         }
-        this.saveChanges(this);
         return ret;
     }
 }
