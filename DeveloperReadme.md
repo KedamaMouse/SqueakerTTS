@@ -35,6 +35,7 @@ There are currently some attach on debug options in the launch.json, but these d
 
 # Package
 
+* run ```npm run build```. this isn't needed for running from source but is for dependencies to be packaged properly.
 * run ```npm run package-win```.
 * copy the .net bin folder into the released folder
 
