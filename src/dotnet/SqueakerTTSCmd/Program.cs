@@ -87,39 +87,8 @@ public class SqueakerTTSCmd {
 
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
-            if (String.IsNullOrEmpty(request.text)) { return; }
-
             //always use ssml for amazon polly,otherwise it's harder to handle special characters and you might get "invalid ssml request" accidently. 
-            request.text = LazySSMLParser.LazySSMLParser.TryParse(request.text);
-
-
-            if (request.vocalLength != 100 && !synthesizer.Voice.Name.Contains("Neural")) 
-            {
-                request.text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength+"%\">"+request.text+"</amazon:effect>";
-            }
-
-            bool adjustPitch = (request.pitch != 0 && !synthesizer.Voice.Name.Contains("Neural"));
-            if (adjustPitch || request.rate !=100) 
-            {
-                var opentag = "<prosody rate=\"" + request.rate + "%\"";
-                if (adjustPitch) 
-                {
-                    var pitchString = request.pitch > 0 ? "+" + request.pitch : request.pitch.ToString();
-                    opentag = opentag + " pitch=\"" + pitchString + "%\"";
-                }
-                opentag = opentag + ">";
-
-                request.text = opentag + request.text + "</prosody>";
-
-            }
-
-            if (request.autoBreaths) 
-            {
-                request.text = "<amazon:auto-breaths>" + request.text + "</amazon:auto-breaths>";
-            }
-
-            request.text = "<speak>" + request.text + "</speak>";
-            synthesizer.Speak(request.text);
+            synthesizer.Speak(GetAmazonSSML(request, GetVoiceCapabilities(synthesizer.Voice)));
         }
         else 
         {
@@ -127,6 +96,55 @@ public class SqueakerTTSCmd {
             
         }
     }
+
+    private VoiceCapabilities GetVoiceCapabilities(VoiceInfo voice) 
+    {
+        bool isNeural = voice.Name.Contains("Neural");
+
+        return new VoiceCapabilities() 
+        {
+            vocalLength= !isNeural,
+            pitch = !isNeural
+        };
+    }
+
+
+    protected string GetAmazonSSML(TTSRequest request, VoiceCapabilities voiceCapabilities)
+    {
+
+        string text = LazySSMLParser.LazySSMLParser.TryParse(request.text);
+
+
+        if (request.vocalLength != 100 && voiceCapabilities.vocalLength)
+        {
+            text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength + "%\">" + text + "</amazon:effect>";
+        }
+
+        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.pitch);
+        if (adjustPitch || request.rate != 100)
+        {
+            var opentag = "<prosody rate=\"" + request.rate + "%\"";
+            if (adjustPitch)
+            {
+                var pitchString = request.pitch > 0 ? "+" + request.pitch : request.pitch.ToString();
+                opentag = opentag + " pitch=\"" + pitchString + "%\"";
+            }
+            opentag = opentag + ">";
+
+            text = opentag + text + "</prosody>";
+
+        }
+
+        if (request.autoBreaths)
+        {
+            text = "<amazon:auto-breaths>" + text + "</amazon:auto-breaths>";
+        }
+
+        text = "<speak>" + text + "</speak>";
+
+        return text;
+    }
+
 
     public void SpeakSSML(string text) 
     {
@@ -200,5 +218,14 @@ public class SqueakerTTSCmd {
         public string? voice { get; set; }
 
         public bool autoBreaths { get; set; }
+    }
+
+    protected class VoiceCapabilities
+    {
+        public bool vocalLength { get; set; }
+        public bool pitch { get; set; }
+
+
+
     }
 }
