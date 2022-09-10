@@ -53,6 +53,18 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
         
     },[submitText]);
 
+    const onKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = React.useCallback((event)=>{
+        switch(event.key)
+        {
+            case "Enter":
+            case "Escape":
+            case "ArrowUp": 
+            case "ArrowDown":
+                event.preventDefault();
+        }
+
+    },[]);
+
     React.useEffect(()=>{
         if(props.takeFocus && textArea.current)
         {
@@ -62,7 +74,7 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
     },[props.takeFocus,textArea.current,props.setNeedToAssignFocus]);
 
 
-    return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} value={text} onChange={handleChange} ref={textArea} />
+    return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} onKeyDown={onKeyDown} value={text} onChange={handleChange} ref={textArea} />
 }
 
 const TextArea = styled.textarea`
