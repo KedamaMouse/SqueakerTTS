@@ -28,7 +28,6 @@ export interface IData
 {
     activeVoiceKey: string;
     voiceProfiles: {[key: string]: IVoiceProfile};
-
 }
 
 export interface IVoiceProfile
