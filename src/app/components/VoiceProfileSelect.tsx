@@ -4,9 +4,9 @@ import styled, { css } from "styled-components";
 import { GlobalHotKeys } from "react-hotkeys";
 
 
-interface IVoiceProfileSelectProps
+interface IVoiceProfileSelectProps extends IData
 {
-    data: IData;
+    
     setActiveVoiceProfile: (key:string) => void;
     removeVoiceProfile: (key:string) => void;
 }
@@ -20,7 +20,7 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
 
 
     let index=1;
-    for (const profileKey in props.data.voiceProfiles)
+    for (const profileKey in props.voiceProfiles)
     {
         let hotkey="";
         if(index < 10){
@@ -32,10 +32,10 @@ export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => 
          }
          index++;
 
-        const profile =props.data.voiceProfiles[profileKey];
+        const profile =props.voiceProfiles[profileKey];
         widgets.push(<VoiceProfleWidget voiceProfile={profile} key={profileKey} hotkey={hotkey}
             setActiveVoiceProfile={props.setActiveVoiceProfile} removeVoiceProfile={props.removeVoiceProfile}
-            selected={(profileKey === props.data.activeVoiceKey)}></VoiceProfleWidget>);
+            selected={(profileKey === props.activeVoiceKey)}></VoiceProfleWidget>);
         
 
     }

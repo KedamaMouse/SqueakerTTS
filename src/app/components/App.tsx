@@ -1,8 +1,9 @@
 
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { IData, IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
+import { IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
 import { ITheme } from '../theme';
+import { DataManager } from './DataManager';
 import { TTSInputField } from './inputField/TTSInputField';
 import { Instructions } from './instructions';
 import { VoiceOptions } from './voiceOptions/VoiceOptions';
@@ -15,89 +16,43 @@ interface IAppProps
 
 export const App:React.FC<IAppProps> = (props) => {
    
-    const [data,setData]= React.useState<IData>(null);
+    const dataManager=React.useState<DataManager>(new DataManager())[0];
+
+    //State that's saved, keep up to date references in datamanager object.
+    const [activeVoiceKey, setActiveVoiceKey] = React.useState<string>();
+    dataManager.activeVoiceKey=activeVoiceKey; 
+    dataManager.setActiveVoiceKey=setActiveVoiceKey;
+    const [voiceProfiles, setVoiceProfiles] = React.useState<{[key: string]: IVoiceProfile}>();
+    dataManager.voiceProfiles=voiceProfiles;
+    dataManager.setVoiceProfiles=setVoiceProfiles;
+
+    //Transient state
     const [needToAssignFocus,setNeedToAssignFocus] = React.useState<boolean>(false);
-
-    const voiceProfile= data?.voiceProfiles[data.activeVoiceKey];
-
-    //this is not the best pattern, but fine as long as our data remains small.
-    const datastring= JSON.stringify(data); 
-
-    const updateVoiceProfile: (value: IVoiceProfile) => void = React.useCallback((value)=>
-    {
-        setData({...data,voiceProfiles:{...data?.voiceProfiles,[value.key]: value}, activeVoiceKey: value.key});
-
-    },[datastring]);
-
-    const setActiveVoiceProfile: (key: string) => void = React.useCallback((key)=>{
-        setData({...data,voiceProfiles:{...data?.voiceProfiles}, activeVoiceKey: key});
-    },[datastring]);
-
-    const removeVoiceProfile:(key: string) => void = React.useCallback((key)=>{
-        const newData = {...data,voiceProfiles:{...data?.voiceProfiles}};
-        delete newData.voiceProfiles[key];
-        setData(newData);
-    },[datastring]);
 
     //Load and save data
     React.useEffect(()=>{
-        if(!data){
-            let loadedData=null;
-            try{
-                loadedData=JSON.parse(window.localStorage.getItem("Data"));
-            }catch(e)
-            {
-                console.log("bad data:"+window.localStorage.getItem("Data"));
-            }
-            
-            if(loadedData)
-            {
-                setData(loadedData);
-            }
-            else
-            {
-                //set default values
-                updateVoiceProfile({
-                    vocalLength: 100,
-                    pitch: 0,
-                    rate: 100,
-                    key:"default",
-                    voice:"",
-                })
-            }
+        if(!activeVoiceKey){
+            dataManager.LoadData();
         }
         else{
             //data exists and changed, save
-            window.localStorage.setItem("Data",JSON.stringify(data));
+            dataManager.SaveData();
         }
-    },[datastring]);
+    },[activeVoiceKey, JSON.stringify(voiceProfiles)]);
     
     //import/export/clear data
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.export,()=>{
-            navigator.clipboard.writeText(JSON.stringify(data));
-        });
+        const removeListener=props.electronAPI.on(ipcToMainChannels.export,dataManager.ExportToClipboard.bind(dataManager));
         return removeListener;
-    },[datastring]);
-
+    },[]);
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.import,async ()=>{
-            const newData=await navigator.clipboard.readText();
-            if(newData){
-                window.localStorage.setItem("Data",newData);
-                setData(null);
-            }
-        });
+        const removeListener=props.electronAPI.on(ipcToMainChannels.import,dataManager.ImportFromClipboard.bind(dataManager));
         return removeListener;
-    },[datastring]);
-
+    },[]);
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.restoreDefaults,()=>{
-            window.localStorage.removeItem("Data");
-            setData(null);
-        });
+        const removeListener=props.electronAPI.on(ipcToMainChannels.restoreDefaults,dataManager.RestoreDefaults.bind(dataManager));
         return removeListener;
-    },[datastring]);
+    },[]);
 
 
     const theme: ITheme = {
@@ -111,17 +66,19 @@ export const App:React.FC<IAppProps> = (props) => {
         errorColor: "#f1ff3b"
       };
 
-    return  data ? <ThemeProvider theme={theme}>
+    const voiceProfile= voiceProfiles ? voiceProfiles[activeVoiceKey] : null;
+
+    return  voiceProfiles ? <ThemeProvider theme={theme}>
                 <OuterDiv> 
                     <MainPane>
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
-                            setvoiceProfile={updateVoiceProfile} setNeedToAssignFocus={setNeedToAssignFocus}/>
+                            setvoiceProfile={dataManager.updateVoiceProfile.bind(dataManager)} setNeedToAssignFocus={setNeedToAssignFocus}/>
                         <Instructions electronAPI={props.electronAPI}/>
                     </MainPane>
                     <SidePane>
-                        <VoiceProfileSelect data={data} setActiveVoiceProfile={setActiveVoiceProfile} 
-                            removeVoiceProfile={removeVoiceProfile}/>
+                        <VoiceProfileSelect activeVoiceKey={activeVoiceKey} voiceProfiles={voiceProfiles} setActiveVoiceProfile={setActiveVoiceKey} 
+                            removeVoiceProfile={dataManager.removeVoiceProfile.bind(dataManager)}/>
                     </SidePane>
                 </OuterDiv>
             </ThemeProvider> : null;
