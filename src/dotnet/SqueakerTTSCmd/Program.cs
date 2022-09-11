@@ -97,30 +97,34 @@ public class SqueakerTTSCmd {
         }
     }
 
-    private VoiceCapabilities GetVoiceCapabilities(VoiceInfo voice) 
+    private ExtendedVoiceInfo GetVoiceCapabilities(VoiceInfo voice) 
     {
         bool isNeural = voice.Name.Contains("Neural");
+        bool isAmazonPoly = voice.Name.Contains("Amazon");
 
-        return new VoiceCapabilities() 
+        return new ExtendedVoiceInfo() 
         {
-            vocalLength= !isNeural,
-            pitch = !isNeural
+            supportsVocalLength= isAmazonPoly && !isNeural,
+            supportsPitch = !isNeural,
+            description = voice.Description,
+            id=voice.Id,
+            name = voice.Name,
         };
     }
 
 
-    protected string GetAmazonSSML(TTSRequest request, VoiceCapabilities voiceCapabilities)
+    protected string GetAmazonSSML(TTSRequest request, ExtendedVoiceInfo voiceCapabilities)
     {
 
         string text = LazySSMLParser.LazySSMLParser.TryParse(request.text);
 
 
-        if (request.vocalLength != 100 && voiceCapabilities.vocalLength)
+        if (request.vocalLength != 100 && voiceCapabilities.supportsVocalLength)
         {
             text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength + "%\">" + text + "</amazon:effect>";
         }
 
-        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.pitch);
+        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.supportsPitch);
         if (adjustPitch || request.rate != 100)
         {
             var opentag = "<prosody rate=\"" + request.rate + "%\"";
@@ -161,11 +165,17 @@ public class SqueakerTTSCmd {
     }
 
 
-    public ReadOnlyCollection<InstalledVoice> GetVoices() 
+    protected List<ExtendedVoiceInfo> GetVoices() 
     {
         var voices = synthesizer.GetInstalledVoices();
+        var extendedVoices = new List<ExtendedVoiceInfo>();
 
-        return voices;
+        foreach (var voice in voices) 
+        {
+            extendedVoices.Add(this.GetVoiceCapabilities(voice.VoiceInfo));
+        }
+
+        return extendedVoices;
     }
 
     public bool SmartSetVoice(string voice) 
@@ -220,11 +230,15 @@ public class SqueakerTTSCmd {
         public bool autoBreaths { get; set; }
     }
 
-    protected class VoiceCapabilities
+    protected class ExtendedVoiceInfo
     {
-        public bool vocalLength { get; set; }
-        public bool pitch { get; set; }
+        public bool supportsVocalLength { get; set; }
+        public bool supportsPitch { get; set; }
 
+        public string name { get; set; }
+        public string id { get; set; }
+
+        public string description { get; set; }
 
 
     }
