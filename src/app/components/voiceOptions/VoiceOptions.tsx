@@ -14,18 +14,20 @@ interface IVoiceOptions
     setNeedToAssignFocus : (value: boolean)=> void;
 }
 
-export interface IVoice
+export interface IVoiceInfo
 {
-
     name: string;
     id: string;
     description: string;
     supportsVocalLength: boolean;
     supportsPitch: boolean;
+    cultureKey: string;
+    cultureDisplayName: string;
+    vendor: string;
 }
 
 export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
-    const [voices,setVoices] = React.useState<Array<IVoice>>();
+    const [voices,setVoices] = React.useState<Array<IVoiceInfo>>();
 
 
     const onVocalLengthChange =(value: number)=>
@@ -54,7 +56,7 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
 
     if(!props.voiceProfile || !voices){return <></>}
 
-    const voice=voices.find((value: IVoice)=>{
+    const voice=voices.find((value: IVoiceInfo)=>{
         return (value.name === props.voiceProfile.voice);
     });
 

@@ -99,16 +99,23 @@ public class SqueakerTTSCmd {
 
     private ExtendedVoiceInfo GetVoiceCapabilities(VoiceInfo voice) 
     {
-        bool isNeural = voice.Name.Contains("Neural");
-        bool isAmazonPoly = voice.Name.Contains("Amazon");
+        string isNeuralString = "";
+        voice.AdditionalInfo.TryGetValue("IsNeural", out isNeuralString);
+        bool isNeural = (isNeuralString != null && isNeuralString.Equals("1"));
+        string vendor = voice.AdditionalInfo["Vendor"];
+
+        bool isAmazonPoly = vendor.Equals("Amazon");
 
         return new ExtendedVoiceInfo() 
         {
-            supportsVocalLength= isAmazonPoly && !isNeural,
-            supportsPitch = !isNeural,
-            description = voice.Description,
-            id=voice.Id,
-            name = voice.Name,
+            SupportsVocalLength= isAmazonPoly && !isNeural,
+            SupportsPitch = !isNeural,
+            Description = voice.Description,
+            Id=voice.Id,
+            Name = voice.Name,
+            Vendor = vendor,
+            CultureKey= voice.Culture?.Name,
+            CultureDisplayName = voice.Culture?.DisplayName,
         };
     }
 
@@ -119,12 +126,12 @@ public class SqueakerTTSCmd {
         string text = LazySSMLParser.LazySSMLParser.TryParse(request.text);
 
 
-        if (request.vocalLength != 100 && voiceCapabilities.supportsVocalLength)
+        if (request.vocalLength != 100 && voiceCapabilities.SupportsVocalLength)
         {
             text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength + "%\">" + text + "</amazon:effect>";
         }
 
-        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.supportsPitch);
+        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.SupportsPitch);
         if (adjustPitch || request.rate != 100)
         {
             var opentag = "<prosody rate=\"" + request.rate + "%\"";
@@ -172,7 +179,7 @@ public class SqueakerTTSCmd {
 
         foreach (var voice in voices) 
         {
-            extendedVoices.Add(this.GetVoiceCapabilities(voice.VoiceInfo));
+            extendedVoices.Add(GetVoiceCapabilities(voice.VoiceInfo));
         }
 
         return extendedVoices;
@@ -232,13 +239,22 @@ public class SqueakerTTSCmd {
 
     protected class ExtendedVoiceInfo
     {
-        public bool supportsVocalLength { get; set; }
-        public bool supportsPitch { get; set; }
+        public bool SupportsVocalLength { get; set; }
+        public bool SupportsPitch { get; set; }
 
-        public string name { get; set; }
-        public string id { get; set; }
+        public string? Name { get; set; }
+        public string? Id { get; set; }
 
-        public string description { get; set; }
+        public string? Description { get; set; }
+
+        public string? Vendor { get; set; }
+
+        public string? CultureKey { get; set; }
+
+        public string? CultureDisplayName { get; set; }
+
+
+
 
 
     }
