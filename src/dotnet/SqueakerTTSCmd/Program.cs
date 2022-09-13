@@ -4,6 +4,7 @@ using SqueakerTTSInterfaces;
 using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 
@@ -106,6 +107,8 @@ public class SqueakerTTSCmd {
 
         bool isAmazonPoly = vendor.Equals("Amazon");
 
+
+
         return new ExtendedVoiceInfo() 
         {
             SupportsVocalLength= isAmazonPoly && !isNeural,
@@ -115,9 +118,95 @@ public class SqueakerTTSCmd {
             Name = voice.Name,
             Vendor = vendor,
             CultureKey= voice.Culture?.Name,
-            CultureDisplayName = voice.Culture?.DisplayName,
+            
+            //Amazon polly has this wrong on a lot of voices in sapi
+            CultureDisplayName = isAmazonPoly ? getLocaleForAmazonPolly(voice.Name) : voice.Culture?.DisplayName,
         };
     }
+
+    private string getLocaleForAmazonPolly(string name) 
+    {
+        string amazonLocaleName = name.Split("-")[1].Trim();
+
+        string cultureCode;
+
+        switch (amazonLocaleName) 
+        {
+            case "Arabic":
+                cultureCode = "ar"; break;
+            case "US English":
+                cultureCode = "en-us"; break;
+            case "Catalan":
+                cultureCode = "ca-ES"; break;
+            case "Chinese Mandarin":
+                cultureCode = "zh-CN"; break;
+            case "Welsh":
+                cultureCode = "cy-GB"; break;
+            case "Danish":
+                cultureCode = "da-DK"; break;
+            case "German":
+                cultureCode = "de-De"; break;
+            case "Australian English":
+                cultureCode = "en-AU"; break;
+            case "Welsh English":
+                cultureCode = "en-GB-Welsh"; break;
+            case "British English":
+                cultureCode = "en-GB"; break;
+            case "Indian English":
+                cultureCode = "en-IN"; break;
+            case "New Zealand English":
+                cultureCode = "en-NZ"; break;
+            case "South African English":
+                cultureCode = "en-ZA"; break;
+            case "Castilian Spanish":
+                cultureCode = ""; break;
+            case "Mexican Spanish":
+                cultureCode = "es-MX"; break;
+            case "US Spanish":
+                cultureCode = "es-US"; break;
+            case "Canadian French":
+                cultureCode = "fr-CA"; break;
+            case "French":
+                cultureCode = "fr-FR"; break;
+            case "Icelandic":
+                cultureCode = "is-IS"; break;
+            case "Italian":
+                cultureCode = "it-IT"; break;
+            case "Japanese":
+                cultureCode = "ja-JP"; break;
+            case "Korean":
+                cultureCode = "ko-KR"; break;
+            case "Norwegian":
+                cultureCode = "nb-NO"; break;
+            case "Dutch":
+                cultureCode = "nl-NL"; break;
+            case "Polish":
+                cultureCode = "pl-PL"; break;
+            case "Brazilian Portuguese":
+                cultureCode = "pt-BR"; break;
+            case "Portuguese":
+                cultureCode = "pt-PT"; break;
+            case "Romanian":
+                cultureCode = "ro-RO"; break;
+            case "Russian":
+                cultureCode = "ru-RU"; break;
+            case "Swedish":
+                cultureCode = "sv-SE"; break;
+            case "Turkish":
+                cultureCode = "tr-TR"; break;
+            default:
+                cultureCode = ""; break;
+        }
+
+        if (cultureCode.Length > 0)
+        {
+            return new CultureInfo(cultureCode).DisplayName;
+        }
+        else { 
+            return amazonLocaleName;
+        }
+    }
+
 
 
     protected string GetAmazonSSML(TTSRequest request, ExtendedVoiceInfo voiceCapabilities)

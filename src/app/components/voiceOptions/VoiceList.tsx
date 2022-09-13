@@ -74,9 +74,11 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
     React.useEffect(()=>{
         if(props.voiceProfile.voice ==="")
         {
-            props.setvoiceProfile({...props.voiceProfile, "voice": VoiceOptions[0].props.value});
+            if(VoiceOptions.length > 0){
+                props.setvoiceProfile({...props.voiceProfile, "voice": VoiceOptions[0].props.value});
+            }
         }
-    },[props.voiceProfile.voice]);
+    });
 
     //voice changed to one no longer matching current filters. clear filters that don't match new voice.
     React.useEffect(()=>{
