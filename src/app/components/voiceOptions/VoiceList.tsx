@@ -46,6 +46,8 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
                 localeList.push(voice.cultureDisplayName);
             }
         }
+        vendorList.sort();
+        localeList.sort();
         return [vendorList,localeList]
     }
     ,[props.voices]);
