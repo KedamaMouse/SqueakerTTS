@@ -35,7 +35,8 @@ public class SqueakerTTSCmd {
         }
         if (voice != null) 
         {
-            if (!connector.SmartSetVoice(voice)) 
+            voice = connector.SmartSetVoice(voice);
+            if (voice == null) 
             {
                 return -1;
             }
@@ -48,7 +49,7 @@ public class SqueakerTTSCmd {
             }
             else
             {
-                connector.Speak(new TTSRequest() {text=text, vocalLength=100, rate=100,pitch=0 });
+                connector.Speak(new TTSRequest() { text = text, vocalLength = 100, rate = 100, pitch = 0, voice = voice }); ;
             }
         }
         return 0;
@@ -83,19 +84,26 @@ public class SqueakerTTSCmd {
     }
     public void Speak(TTSRequest request) 
     {
+        //System.Console.WriteLine("start speaking");
         if (String.IsNullOrEmpty(request.text)) { return;}
+        platformUtils.sendStart();
         SetVoice(request.voice);
+        synthesizer.SpeakCompleted += onSpeakCompleted;
 
         if (synthesizer.Voice != null && synthesizer.Voice.Name.Contains("Amazon")) 
         {
             //always use ssml for amazon polly,otherwise it's harder to handle special characters and you might get "invalid ssml request" accidently. 
-            synthesizer.Speak(GetAmazonSSML(request, GetVoiceCapabilities(synthesizer.Voice)));
+            synthesizer.SpeakAsync(GetAmazonSSML(request, GetVoiceCapabilities(synthesizer.Voice)));
         }
         else 
         {
-            synthesizer.Speak(request.text);
+            synthesizer.SpeakAsync(request.text);
             
         }
+    }
+
+    private void onSpeakCompleted(Object? sender,SpeakCompletedEventArgs args) {
+        platformUtils.sendStop();
     }
 
     private ExtendedVoiceInfo GetVoiceCapabilities(VoiceInfo voice) 
@@ -274,9 +282,9 @@ public class SqueakerTTSCmd {
         return extendedVoices;
     }
 
-    public bool SmartSetVoice(string voice) 
+    public string SmartSetVoice(string voiceSearch) 
     {
-        string[] keywords = voice.Split(" ");
+        string[] keywords = voiceSearch.Split(" ");
 
         ReadOnlyCollection<InstalledVoice> voices = synthesizer.GetInstalledVoices();
 
@@ -292,13 +300,12 @@ public class SqueakerTTSCmd {
             }
             if (matches) 
             {
-                SetVoice(v.VoiceInfo.Name);
-                return true;
+                return v.VoiceInfo.Name;   
             }
         }
 
-        Console.WriteLine("No match found for voice " + voice);
-        return false;
+        Console.WriteLine("No match found for voice " + voiceSearch);
+        return null;
         
     }
 

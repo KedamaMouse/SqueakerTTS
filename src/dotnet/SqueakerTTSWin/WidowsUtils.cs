@@ -30,5 +30,15 @@ namespace SqueakerTTSWin
             }
 
         }
+
+        public void sendStart()
+        {
+            Process.Start("dist/startSpeakingScript.exe");
+        }
+        public void sendStop()
+        {
+            Process.Start("dist/stopSpeakingScript.exe");
+        }
+
     }
 }
