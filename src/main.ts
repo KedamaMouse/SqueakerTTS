@@ -1,22 +1,11 @@
 const url = require("url");
 const path = require("path");
-const fs = require('fs');
 
 import { app, BrowserWindow, Menu } from "electron";
 import { ConnectionHandler } from "./ConnectionHandler";
 import { GetMenuTemplate } from "./electronMenu";
 
 let window: BrowserWindow | null;
-
-export let exepath=path.join(path.dirname(app.getPath("exe")),"bin\\SqueakerTTSCmd.exe");;
-if(!fs.existsSync(exepath)) //different file path when not packaged.
-{
-  exepath=path.join(__dirname,"bin\\SqueakerTTSCmd.exe");
-}
-if(!fs.existsSync(exepath))
-{
-  app.quit();
-}
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 
