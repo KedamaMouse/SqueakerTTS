@@ -1,4 +1,5 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { IElectrionAPI, IVoiceProfile } from "../../../ICommonInterfaces";
 import { IVoiceInfo } from './VoiceOptions';
 
@@ -97,8 +98,12 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 
     
     return <div>
-        <select onChange={filterChangedHandler.bind(undefined,voiceInfo?.vendor,setVendor)} value={vendor}>{VendorOptions}</select>
-        <select onChange={filterChangedHandler.bind(undefined,voiceInfo?.cultureDisplayName,setLocale)} value={locale}>{LocaleOptions}</select>
-        <select onChange={voiceChangedHandler} value={props.voiceProfile.voice}>{VoiceOptions}</select>
+        <Select onChange={filterChangedHandler.bind(undefined,voiceInfo?.vendor,setVendor)} value={vendor}>{VendorOptions}</Select>
+        <Select onChange={filterChangedHandler.bind(undefined,voiceInfo?.cultureDisplayName,setLocale)} value={locale}>{LocaleOptions}</Select>
+        <Select onChange={voiceChangedHandler} value={props.voiceProfile.voice}>{VoiceOptions}</Select>
     </div>;
 }
+
+const Select=styled.select`
+    margin-bottom: 2px;
+`

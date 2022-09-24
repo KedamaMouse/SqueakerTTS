@@ -62,14 +62,15 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
 
     return voices ? <>                
         <VoiceList electronAPI={props.electronAPI} voiceProfile={props.voiceProfile} setvoiceProfile={props.setvoiceProfile} voices={voices}/>
-        <VolumeSlider electronAPI={props.electronAPI} /> 
         {voice?.supportsVocalLength ? <Slider min={vocalLengthMin} max={vocalLengthMax} 
             value={props.voiceProfile.vocalLength} setValue={onVocalLengthChange} label={"Vocal Length"}/> : null}
         {voice?.supportsPitch ? <Slider min={pitchMin} max={pitchMax} 
             value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/> : null }
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
-        <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
+        
         <Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox>
+        <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
+        <VolumeSlider electronAPI={props.electronAPI} /> 
     </> : null;
 }
 
