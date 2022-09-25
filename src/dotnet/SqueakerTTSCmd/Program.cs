@@ -4,6 +4,7 @@ using SqueakerTTSInterfaces;
 using System.Collections.ObjectModel;
 using System.CommandLine;
 using System.CommandLine.NamingConventionBinder;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
 
@@ -97,30 +98,130 @@ public class SqueakerTTSCmd {
         }
     }
 
-    private VoiceCapabilities GetVoiceCapabilities(VoiceInfo voice) 
+    private ExtendedVoiceInfo GetVoiceCapabilities(VoiceInfo voice) 
     {
-        bool isNeural = voice.Name.Contains("Neural");
+        string isNeuralString = "";
+        voice.AdditionalInfo.TryGetValue("IsNeural", out isNeuralString);
+        bool isNeural = (isNeuralString != null && isNeuralString.Equals("1"));
+        string vendor = voice.AdditionalInfo["Vendor"];
 
-        return new VoiceCapabilities() 
+        bool isAmazonPoly = vendor.Equals("Amazon");
+
+
+
+        return new ExtendedVoiceInfo() 
         {
-            vocalLength= !isNeural,
-            pitch = !isNeural
+            SupportsVocalLength= isAmazonPoly && !isNeural,
+            SupportsPitch = !isNeural,
+            Description = voice.Description,
+            Id=voice.Id,
+            Name = voice.Name,
+            Vendor = vendor,
+            CultureKey= voice.Culture?.Name,
+            SupportsAutoBreaths = isAmazonPoly && !isNeural,
+            
+            //Amazon polly has this wrong on a lot of voices in sapi
+            CultureDisplayName = isAmazonPoly ? getLocaleForAmazonPolly(voice.Name) : voice.Culture?.DisplayName,
         };
     }
 
+    private string getLocaleForAmazonPolly(string name) 
+    {
+        string amazonLocaleName = name.Split("-")[1].Trim();
 
-    protected string GetAmazonSSML(TTSRequest request, VoiceCapabilities voiceCapabilities)
+        string cultureCode;
+
+        switch (amazonLocaleName) 
+        {
+            case "Arabic":
+                cultureCode = "ar"; break;
+            case "US English":
+                cultureCode = "en-us"; break;
+            case "Catalan":
+                cultureCode = "ca-ES"; break;
+            case "Chinese Mandarin":
+                cultureCode = "zh-CN"; break;
+            case "Welsh":
+                cultureCode = "cy-GB"; break;
+            case "Danish":
+                cultureCode = "da-DK"; break;
+            case "German":
+                cultureCode = "de-De"; break;
+            case "Australian English":
+                cultureCode = "en-AU"; break;
+            case "Welsh English":
+                cultureCode = "en-GB-Welsh"; break;
+            case "British English":
+                cultureCode = "en-GB"; break;
+            case "Indian English":
+                cultureCode = "en-IN"; break;
+            case "New Zealand English":
+                cultureCode = "en-NZ"; break;
+            case "South African English":
+                cultureCode = "en-ZA"; break;
+            case "Castilian Spanish":
+                cultureCode = ""; break;
+            case "Mexican Spanish":
+                cultureCode = "es-MX"; break;
+            case "US Spanish":
+                cultureCode = "es-US"; break;
+            case "Canadian French":
+                cultureCode = "fr-CA"; break;
+            case "French":
+                cultureCode = "fr-FR"; break;
+            case "Icelandic":
+                cultureCode = "is-IS"; break;
+            case "Italian":
+                cultureCode = "it-IT"; break;
+            case "Japanese":
+                cultureCode = "ja-JP"; break;
+            case "Korean":
+                cultureCode = "ko-KR"; break;
+            case "Norwegian":
+                cultureCode = "nb-NO"; break;
+            case "Dutch":
+                cultureCode = "nl-NL"; break;
+            case "Polish":
+                cultureCode = "pl-PL"; break;
+            case "Brazilian Portuguese":
+                cultureCode = "pt-BR"; break;
+            case "Portuguese":
+                cultureCode = "pt-PT"; break;
+            case "Romanian":
+                cultureCode = "ro-RO"; break;
+            case "Russian":
+                cultureCode = "ru-RU"; break;
+            case "Swedish":
+                cultureCode = "sv-SE"; break;
+            case "Turkish":
+                cultureCode = "tr-TR"; break;
+            default:
+                cultureCode = ""; break;
+        }
+
+        if (cultureCode.Length > 0)
+        {
+            return new CultureInfo(cultureCode).DisplayName;
+        }
+        else { 
+            return amazonLocaleName;
+        }
+    }
+
+
+
+    protected string GetAmazonSSML(TTSRequest request, ExtendedVoiceInfo voiceCapabilities)
     {
 
         string text = LazySSMLParser.LazySSMLParser.TryParse(request.text);
 
 
-        if (request.vocalLength != 100 && voiceCapabilities.vocalLength)
+        if (request.vocalLength != 100 && voiceCapabilities.SupportsVocalLength)
         {
             text = "<amazon:effect vocal-tract-length=\"" + request.vocalLength + "%\">" + text + "</amazon:effect>";
         }
 
-        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.pitch);
+        bool adjustPitch = (request.pitch != 0 && voiceCapabilities.SupportsPitch);
         if (adjustPitch || request.rate != 100)
         {
             var opentag = "<prosody rate=\"" + request.rate + "%\"";
@@ -135,7 +236,7 @@ public class SqueakerTTSCmd {
 
         }
 
-        if (request.autoBreaths)
+        if (request.autoBreaths && voiceCapabilities.SupportsAutoBreaths)
         {
             text = "<amazon:auto-breaths>" + text + "</amazon:auto-breaths>";
         }
@@ -161,11 +262,17 @@ public class SqueakerTTSCmd {
     }
 
 
-    public ReadOnlyCollection<InstalledVoice> GetVoices() 
+    protected List<ExtendedVoiceInfo> GetVoices() 
     {
         var voices = synthesizer.GetInstalledVoices();
+        var extendedVoices = new List<ExtendedVoiceInfo>();
 
-        return voices;
+        foreach (var voice in voices) 
+        {
+            extendedVoices.Add(GetVoiceCapabilities(voice.VoiceInfo));
+        }
+
+        return extendedVoices;
     }
 
     public bool SmartSetVoice(string voice) 
@@ -220,10 +327,25 @@ public class SqueakerTTSCmd {
         public bool autoBreaths { get; set; }
     }
 
-    protected class VoiceCapabilities
+    protected class ExtendedVoiceInfo
     {
-        public bool vocalLength { get; set; }
-        public bool pitch { get; set; }
+        public bool SupportsVocalLength { get; set; }
+        public bool SupportsPitch { get; set; }
+
+        public bool SupportsAutoBreaths { get; set; }
+
+        public string? Name { get; set; }
+        public string? Id { get; set; }
+
+        public string? Description { get; set; }
+
+        public string? Vendor { get; set; }
+
+        public string? CultureKey { get; set; }
+
+        public string? CultureDisplayName { get; set; }
+
+
 
 
 

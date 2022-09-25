@@ -1,48 +1,109 @@
 import * as React from 'react';
+import styled from 'styled-components';
 import { IElectrionAPI, IVoiceProfile } from "../../../ICommonInterfaces";
-
-interface IVoice
-{
-    voiceInfo:
-    {
-        name: string;
-        id: string;
-        description: string;
-    }
-}
+import { IVoiceInfo } from './VoiceOptions';
 
 interface IVoiceListProps
 {
     electronAPI : IElectrionAPI;
     voiceProfile: IVoiceProfile;
     setvoiceProfile: (value: IVoiceProfile) =>void;
+    voices: Array<IVoiceInfo>;
 }
+
 export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 {
-    const [voices,setVoices] = React.useState<Array<IVoice>>();
-    const changeHandler:React.ChangeEventHandler<HTMLSelectElement> = (event): void=>{
+    const [vendor, setVendor] = React.useState<string>("");
+    const [locale,setLocale] = React.useState<string>("");
+
+    const voiceInfo=props.voices.find((value: IVoiceInfo)=>{
+        return (value.name === props.voiceProfile.voice);
+    });
+
+    const voiceChangedHandler: React.ChangeEventHandler<HTMLSelectElement> = (event): void=>{
         props.setvoiceProfile({...props.voiceProfile, "voice": event.target.value});
     };
+    const filterChangedHandler = (ComparisonValue: string, setValue: React.Dispatch<React.SetStateAction<string>>,event :React.ChangeEvent<HTMLSelectElement>): void=>{
+        const newValue=event.target.value;
+        setValue(newValue);
+        if(newValue && newValue !== ComparisonValue)
+        {
+            props.setvoiceProfile({...props.voiceProfile, "voice": ""});
+        }
+    };
 
-    if(!voices)
-    {
-        getVoices(props.electronAPI,setVoices);
+    //obtain filter lists
+    const [vendorList,localeList] =React.useMemo(()=>{
+        const vendorList: string[]=[];
+        const localeList: string[]=[];
+        for(const voice of props.voices)
+        {
+            if(vendorList.indexOf(voice.vendor)<0)
+            {
+                vendorList.push(voice.vendor);
+            }
+            if(localeList.indexOf(voice.cultureDisplayName)<0)
+            {
+                localeList.push(voice.cultureDisplayName);
+            }
+        }
+        vendorList.sort();
+        localeList.sort();
+        return [vendorList,localeList]
     }
+    ,[props.voices]);
 
-    const options = voices?.map((voice)=>
-    {
-        return <option value={voice.voiceInfo.name} key={voice.voiceInfo.id}>{voice.voiceInfo.description}</option>
+    const VendorOptions = vendorList.map((value: string) => {
+        return <option value={value}>{value}</option>
     });
-    if(options && props.voiceProfile.voice ==="")
+    VendorOptions.unshift(<option value={""}>[Vendor]</option>);
+
+    const LocaleOptions = localeList.map((value: string) => {
+        return <option value={value}>{value}</option>
+    });
+    LocaleOptions.unshift(<option value={""}>[Locale]</option>)
+
+    //Voices matching current filters
+    const VoiceOptions = props.voices.reduce((result,voice)=>
     {
-        props.setvoiceProfile({...props.voiceProfile, "voice": options[0].props.value});
-    }
+        if(vendor && voice.vendor !== vendor){return result;}
+        if(locale && voice.cultureDisplayName !== locale){return result;}
 
-    return voices ? <select onChange={changeHandler} value={props.voiceProfile.voice}>{options}</select> : <></>;
+        result.push(<option value={voice.name} key={voice.id}>{voice.description}</option>);
+        return result;
+    },[]);
+
+    //user filtered options to exclude currently selected voice. select first option in the list.
+    React.useEffect(()=>{
+        if(props.voiceProfile.voice ==="")
+        {
+            if(VoiceOptions.length > 0){
+                props.setvoiceProfile({...props.voiceProfile, "voice": VoiceOptions[0].props.value});
+            }
+        }
+    });
+
+    //voice changed to one no longer matching current filters. clear filters that don't match new voice.
+    React.useEffect(()=>{
+
+        if(voiceInfo && vendor && voiceInfo.vendor !== vendor){
+            setVendor("");
+        }
+        if(voiceInfo && locale && voiceInfo.cultureDisplayName !== locale)
+        {
+            setLocale("");
+        }
+
+    },[voiceInfo?.vendor, voiceInfo?.cultureDisplayName]);
+
+    
+    return <div>
+        <Select onChange={filterChangedHandler.bind(undefined,voiceInfo?.vendor,setVendor)} value={vendor}>{VendorOptions}</Select>
+        <Select onChange={filterChangedHandler.bind(undefined,voiceInfo?.cultureDisplayName,setLocale)} value={locale}>{LocaleOptions}</Select>
+        <Select onChange={voiceChangedHandler} value={props.voiceProfile.voice}>{VoiceOptions}</Select>
+    </div>;
 }
 
-async function getVoices(electronAPI:IElectrionAPI,setVoices: React.Dispatch<(prevState: undefined) => undefined>)
-{
-    const voices =await electronAPI.sendTTSCommand("getVoices");
-    setVoices(voices);
-}
+const Select=styled.select`
+    margin-bottom: 2px;
+`
