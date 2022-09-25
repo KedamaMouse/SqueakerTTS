@@ -9,6 +9,7 @@ export function GetMenuTemplate(window: BrowserWindow): Array<(MenuItemConstruct
                 {label: 'Import from clipboard', click: ()=>{window.webContents.send("import")}},
                 {label: 'Export to clipboard', click: ()=>{window.webContents.send("export")}},
                 {label: 'Reset all to default', click: ()=>{window.webContents.send("restoreDefaults")}},
+                
             ]
         },
         {

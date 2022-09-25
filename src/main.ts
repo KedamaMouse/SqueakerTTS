@@ -20,6 +20,7 @@ const createWindow = () => {
     disableBlinkFeatures: "Auxclick",
     backgroundThrottling: false,
   }});
+  
   Menu.setApplicationMenu(Menu.buildFromTemplate(GetMenuTemplate(window)));
   window.loadURL(
     url.format({
