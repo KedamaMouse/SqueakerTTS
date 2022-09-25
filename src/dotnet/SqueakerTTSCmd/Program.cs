@@ -118,6 +118,7 @@ public class SqueakerTTSCmd {
             Name = voice.Name,
             Vendor = vendor,
             CultureKey= voice.Culture?.Name,
+            SupportsAutoBreaths = isAmazonPoly && !isNeural,
             
             //Amazon polly has this wrong on a lot of voices in sapi
             CultureDisplayName = isAmazonPoly ? getLocaleForAmazonPolly(voice.Name) : voice.Culture?.DisplayName,
@@ -235,7 +236,7 @@ public class SqueakerTTSCmd {
 
         }
 
-        if (request.autoBreaths)
+        if (request.autoBreaths && voiceCapabilities.SupportsAutoBreaths)
         {
             text = "<amazon:auto-breaths>" + text + "</amazon:auto-breaths>";
         }
@@ -330,6 +331,8 @@ public class SqueakerTTSCmd {
     {
         public bool SupportsVocalLength { get; set; }
         public bool SupportsPitch { get; set; }
+
+        public bool SupportsAutoBreaths { get; set; }
 
         public string? Name { get; set; }
         public string? Id { get; set; }

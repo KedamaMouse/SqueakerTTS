@@ -21,6 +21,7 @@ export interface IVoiceInfo
     description: string;
     supportsVocalLength: boolean;
     supportsPitch: boolean;
+    supportsAutoBreaths: boolean;
     cultureKey: string;
     cultureDisplayName: string;
     vendor: string;
@@ -68,7 +69,7 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
             value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/> : null }
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
         
-        <Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox>
+        {voice.supportsAutoBreaths ? <><Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox></> : null}
         <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
         <VolumeSlider electronAPI={props.electronAPI} /> 
     </> : null;
