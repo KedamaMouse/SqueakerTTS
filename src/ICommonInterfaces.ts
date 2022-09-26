@@ -4,15 +4,17 @@ import { IpcRendererEvent } from "electron";
 export interface IElectrionAPI {
     sendTTSCommand: (command: string, arg?: any) => Promise<any>;
     speak: (args: ITTSRequest) => Promise<any>;
-    on: (channel: ipcToMainChannels, callback: (event: IpcRendererEvent, ...args: any[]) => void) => ()=>void;
+    on: (channel: ipcFromMainChannels, callback: (event: IpcRendererEvent, ...args: any[]) => void) => ()=>void;
 }
 
-export enum ipcToMainChannels
+export enum ipcFromMainChannels
 {
     import = "import",
     export = "export",
     restoreDefaults = "restoreDefaults",
     errorReconnect = "errorReconnect",
+    startCommandSet = "startCommandSet",
+    stopCommandSet = "stopCommandSet",
 }
 
 export interface ITTSRequest {
@@ -28,6 +30,8 @@ export interface IData
 {
     activeVoiceKey: string;
     voiceProfiles: {[key: string]: IVoiceProfile};
+    startCommand: string;
+    stopCommand: string;
 }
 
 export interface IVoiceProfile

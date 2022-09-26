@@ -4,11 +4,13 @@ import styled, { css } from "styled-components";
 import { GlobalHotKeys } from "react-hotkeys";
 
 
-interface IVoiceProfileSelectProps extends IData
+interface IVoiceProfileSelectProps
 {
     
     setActiveVoiceProfile: (key:string) => void;
     removeVoiceProfile: (key:string) => void;
+    activeVoiceKey: string;
+    voiceProfiles: {[key: string]: IVoiceProfile};
 }
 
 export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => {

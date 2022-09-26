@@ -7,6 +7,7 @@ using System.CommandLine.NamingConventionBinder;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Speech.Synthesis;
+using System.Diagnostics;
 
 public class SqueakerTTSCmd {
 
@@ -58,6 +59,8 @@ public class SqueakerTTSCmd {
     private readonly Connection? connection;
     SpeechSynthesizer? synthesizer;
     IPlatformDependantUtils platformUtils;
+    private string StartCommand { get; set; }
+    private string StopCommand { get; set; }
     public SqueakerTTSCmd(bool MakeConnection) {
         
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -75,6 +78,8 @@ public class SqueakerTTSCmd {
             connection.On("getVoices", GetVoices);
             connection.On("stop", Stop);
             connection.On<string>("setVolume", SetVolume);
+            connection.On<string>("setStartCommand", SetStartCommand);
+            connection.On<string>("setStopCommand", SetStopCommand);
         }
      }
 
@@ -86,7 +91,11 @@ public class SqueakerTTSCmd {
     {
         //System.Console.WriteLine("start speaking");
         if (String.IsNullOrEmpty(request.text)) { return;}
-        platformUtils.sendStart();
+
+        if (!String.IsNullOrEmpty(StartCommand))
+        {
+            Process.Start(StartCommand);
+        }
         SetVoice(request.voice);
         synthesizer.SpeakCompleted += onSpeakCompleted;
 
@@ -103,7 +112,10 @@ public class SqueakerTTSCmd {
     }
 
     private void onSpeakCompleted(Object? sender,SpeakCompletedEventArgs args) {
-        platformUtils.sendStop();
+        if (!String.IsNullOrEmpty(StopCommand))
+        {
+            Process.Start(StopCommand);
+        }
     }
 
     private ExtendedVoiceInfo GetVoiceCapabilities(VoiceInfo voice) 
@@ -267,6 +279,15 @@ public class SqueakerTTSCmd {
     {
         synthesizer.SpeakAsyncCancelAll();
  
+    }
+
+    public void SetStartCommand(string command) 
+    {
+        StartCommand = command;
+    }
+    public void SetStopCommand(string command)
+    {
+        StopCommand = command;
     }
 
 

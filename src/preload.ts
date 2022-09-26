@@ -1,5 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
-import { IElectrionAPI, ipcToMainChannels, ITTSRequest } from "./ICommonInterfaces";
+import { IElectrionAPI, ipcFromMainChannels, ITTSRequest } from "./ICommonInterfaces";
 
 
 const coreSend= (command:string, arg?: any) => 
@@ -15,9 +15,9 @@ const electronAPI: IElectrionAPI=
     },     
     sendTTSCommand: coreSend,
 
-    on: (channel: ipcToMainChannels, callback) =>
+    on: (channel: ipcFromMainChannels, callback) =>
     {
-        if(Object.values(ipcToMainChannels).includes(channel)){
+        if(Object.values(ipcFromMainChannels).includes(channel)){
             
             ipcRenderer.on(channel,callback);
             return () => {ipcRenderer.removeListener(channel,callback);}

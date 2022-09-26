@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ipcToMainChannels } from '../../ICommonInterfaces';
+import { IElectrionAPI, ipcFromMainChannels } from '../../ICommonInterfaces';
 
 
 interface IInstructionsProps
@@ -13,7 +13,7 @@ export const Instructions:React.FC<IInstructionsProps> = (props) => {
     const [errorText,setErrorText] = React.useState<string>("");
     
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.errorReconnect,()=>{
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.errorReconnect,()=>{
             setErrorText("background process disconnected. reconnecting.");
         });
         return removeListener;
