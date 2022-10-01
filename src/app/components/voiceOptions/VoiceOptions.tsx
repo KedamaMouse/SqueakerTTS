@@ -57,7 +57,7 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
 
     if(!props.voiceProfile || !voices){return <></>}
 
-    const voice=voices.find((value: IVoiceInfo)=>{
+    const voice:IVoiceInfo=voices.find((value: IVoiceInfo)=>{
         return (value.name === props.voiceProfile.voice);
     });
 
@@ -69,7 +69,7 @@ export const VoiceOptions:React.FC<IVoiceOptions> = (props) => {
             value={props.voiceProfile.pitch} setValue={onPitchChange} label='pitch'/> : null }
         <Slider min={rateMin} max={rateMax} value={props.voiceProfile.rate} setValue={onRateChange} label='rate'/>
         
-        {voice.supportsAutoBreaths ? <><Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox></> : null}
+        {voice?.supportsAutoBreaths ? <><Label>auto breaths</Label><Checkbox type={"checkbox"} checked={!!props.voiceProfile.autoBreaths} onChange={onAutoBreathToggle} ></Checkbox></> : null}
         <SaveAsButton setvoiceProfile={props.setvoiceProfile} voiceProfile={props.voiceProfile} setNeedToAssignFocus={props.setNeedToAssignFocus}></SaveAsButton>
         <VolumeSlider electronAPI={props.electronAPI} /> 
     </> : null;

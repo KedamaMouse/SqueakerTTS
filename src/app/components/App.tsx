@@ -6,6 +6,7 @@ import { defaultTheme } from '../theme';
 import { useDataManager } from './DataManager';
 import { TTSInputField } from './inputField/TTSInputField';
 import { Instructions } from './instructions';
+import { Settings } from './Settings';
 import { VoiceOptions } from './voiceOptions/VoiceOptions';
 import { VoiceProfileSelect } from './VoiceProfileSelect';
 
@@ -69,6 +70,7 @@ export const App:React.FC<IAppProps> = (props) => {
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                             setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
                         <Instructions electronAPI={props.electronAPI}/>
+                       <Settings dataManager={dm}/>
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect activeVoiceKey={dm.activeVoiceKey} voiceProfiles={dm.voiceProfiles} setActiveVoiceProfile={dm.setActiveVoiceKey} 
