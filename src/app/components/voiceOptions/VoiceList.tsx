@@ -54,14 +54,14 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
     ,[props.voices]);
 
     const VendorOptions = vendorList.map((value: string) => {
-        return <option value={value}>{value}</option>
+        return <option key={value} value={value}>{value}</option>
     });
-    VendorOptions.unshift(<option value={""}>[Vendor]</option>);
+    VendorOptions.unshift(<option value="" key="None">[Vendor]</option>);
 
     const LocaleOptions = localeList.map((value: string) => {
-        return <option value={value}>{value}</option>
+        return <option key={value} value={value}>{value}</option>
     });
-    LocaleOptions.unshift(<option value={""}>[Locale]</option>)
+    LocaleOptions.unshift(<option value="" key="None">[Locale]</option>)
 
     //Voices matching current filters
     const VoiceOptions = props.voices.reduce((result,voice)=>

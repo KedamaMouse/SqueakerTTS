@@ -23,12 +23,14 @@
 			"type": "shell",
 			"command": "npm run build",
 			"problemMatcher": ["$tsc"],
+			"dependsOn": ["tsc: build - tsconfig.json"]
 		},
 		{
 			"label": "build react",
 			"type": "shell",
 			"command": "npm run build:react",
 			"problemMatcher": ["$tsc"],
+			"dependsOn": ["build electron"]
 		},
 	]
 }
