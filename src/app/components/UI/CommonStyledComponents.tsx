@@ -27,10 +27,11 @@ export const Button = styled.button`
 export const LinkButton = styled.button`
     background-color: transparent;
     border: none;
-    color: ${props => props.theme.appBackTextColor};
+    color: ${props => props.theme.linkTextColor};
+    box-shadow: 1px 1px;
     font-size: inherit;
     &:hover, &:focus
     {
-        text-decoration: underline;
+        filter: brightness(120%);
     }
 `

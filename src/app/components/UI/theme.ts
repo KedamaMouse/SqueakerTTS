@@ -8,15 +8,17 @@ export interface ITheme
     labelTextColor: string;
     selectedBorderColor: string;
     errorColor: string;
+    linkTextColor: string;
 }
 
 export const defaultTheme: ITheme = {
-    editBackColor:  "rgb(247, 217, 247)",
+    editBackColor:  "#F7D9F7",
     appBackTextColor: "white",
-    appBackColor:"rgb(159, 109, 159)",
+    appBackColor:"#5D3C5D",
     sliderThumbBackColor: "rgb(78, 113, 85)",
     sliderThumbTextColor: "white",
     labelTextColor: "rgb(72,72,72)",
     selectedBorderColor: "rgb(72,255,10)",
-    errorColor: "#f1ff3b"
+    errorColor: "#f1ff3b",
+    linkTextColor: "#F7D9F7",
   };

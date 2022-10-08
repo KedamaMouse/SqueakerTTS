@@ -107,4 +107,5 @@ export const VoiceList:React.FC<IVoiceListProps> = (props) =>
 
 const Select=styled.select`
     margin-bottom: 2px;
+    background-color: ${props => props.theme.editBackColor};
 `
