@@ -3,13 +3,13 @@ import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { ipcFromMainChannels } from "../../ICommonInterfaces";
 import { IElectrionAPI } from '../../mainElectronProcess/preload';
-import { defaultTheme } from '../theme';
+import { defaultTheme } from './UI/theme';
 import { useDataManager } from './DataManager';
-import { TTSInputField } from './inputField/TTSInputField';
-import { Instructions } from './instructions';
-import { Settings } from './Settings';
-import { VoiceOptions } from './voiceOptions/VoiceOptions';
-import { VoiceProfileSelect } from './VoiceProfileSelect';
+import { TTSInputField } from './mainpane/inputField/TTSInputField';
+import { Instructions } from './mainpane/Instructions';
+import { Settings } from './mainpane/Settings';
+import { VoiceOptions } from './mainpane/voiceOptions/VoiceOptions';
+import { VoiceProfileSelect } from './sidepane/VoiceProfileSelect';
 
 interface IAppProps
 {

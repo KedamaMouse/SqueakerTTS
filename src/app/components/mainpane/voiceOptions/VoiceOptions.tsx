@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, vocalLengthMax, vocalLengthMin } from "../../../ICommonInterfaces";
+import { IVoiceProfile, pitchMax, pitchMin, rateMax, rateMin, vocalLengthMax, vocalLengthMin } from "../../../../ICommonInterfaces";
 
 import { VoiceList } from './VoiceList';
 import {Slider, VolumeSlider } from './Sliders';
 import { SaveAsButton } from './SaveAsButton';
-import { Checkbox, Label } from '../CommonStyledComponents';
-import { IElectrionAPI } from '../../../mainElectronProcess/preload';
+import { Checkbox, Label } from '../../UI/CommonStyledComponents';
+import { IElectrionAPI } from '../../../../mainElectronProcess/preload';
 
 interface IVoiceOptions
 {

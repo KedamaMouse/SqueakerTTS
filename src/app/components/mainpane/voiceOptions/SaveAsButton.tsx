@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IVoiceProfile } from '../../../ICommonInterfaces';
+import { IVoiceProfile } from '../../../../ICommonInterfaces';
 
 interface ISaveAsButtonProps
 {

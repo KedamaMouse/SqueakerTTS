@@ -1,8 +1,8 @@
-import { IData, IVoiceProfile } from "../../ICommonInterfaces";
+import { IData, IVoiceProfile } from "../../../ICommonInterfaces";
 import * as React from 'react';
 import styled, { css } from "styled-components";
 import { GlobalHotKeys } from "react-hotkeys";
-import { Button } from "./CommonStyledComponents";
+import { Button } from "../UI/CommonStyledComponents";
 
 
 interface IVoiceProfileSelectProps

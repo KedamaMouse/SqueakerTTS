@@ -1,6 +1,3 @@
-import { IpcRendererEvent } from "electron";
-
-
 export enum ipcFromMainChannels
 {
     import = "import",

@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI } from '../../mainElectronProcess/preload';
-import { Button, LinkButton, SectionDiv } from './CommonStyledComponents';
-import { DataManager } from './DataManager';
+import { IElectrionAPI } from '../../../mainElectronProcess/preload';
+import { Button, LinkButton, SectionDiv } from '../UI/CommonStyledComponents';
+import { DataManager } from '../DataManager';
 
 interface ISettingsProps
 {
