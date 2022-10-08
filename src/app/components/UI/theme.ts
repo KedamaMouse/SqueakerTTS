@@ -14,7 +14,7 @@ export interface ITheme
 export const defaultTheme: ITheme = {
     editBackColor:  "#F7D9F7",
     appBackTextColor: "white",
-    appBackColor:"#5D3C5D",
+    appBackColor:"#704870",
     sliderThumbBackColor: "rgb(78, 113, 85)",
     sliderThumbTextColor: "white",
     labelTextColor: "rgb(72,72,72)",
