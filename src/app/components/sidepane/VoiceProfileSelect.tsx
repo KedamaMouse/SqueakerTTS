@@ -1,14 +1,17 @@
-import { IData, IVoiceProfile } from "../../ICommonInterfaces";
+import { IData, IVoiceProfile } from "../../../ICommonInterfaces";
 import * as React from 'react';
 import styled, { css } from "styled-components";
 import { GlobalHotKeys } from "react-hotkeys";
+import { Button } from "../UI/CommonStyledComponents";
 
 
-interface IVoiceProfileSelectProps extends IData
+interface IVoiceProfileSelectProps
 {
     
     setActiveVoiceProfile: (key:string) => void;
     removeVoiceProfile: (key:string) => void;
+    activeVoiceKey: string;
+    voiceProfiles: {[key: string]: IVoiceProfile};
 }
 
 export const VoiceProfileSelect:React.FC<IVoiceProfileSelectProps> = (props) => {
@@ -88,7 +91,7 @@ const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
         <TopRow>
             <NameSpan>{props.voiceProfile.key}</NameSpan>
             {props.hotkey ? <span>({props.hotkey})</span> : null}
-            {!props.selected ? <RemoveButton title="Remove" onClick={onRemove}>X</RemoveButton> : null }
+            {!props.selected ? <Button title="Remove" onClick={onRemove}>X</Button> : null }
             <ClearFloat/>
 
         </TopRow>
@@ -103,10 +106,6 @@ const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
 const TopRow = styled.div`
     
-`
-const RemoveButton = styled.button`
-    float: right;
-    font-size: 10px;
 `
 const ClearFloat= styled.div`
     clear: both;

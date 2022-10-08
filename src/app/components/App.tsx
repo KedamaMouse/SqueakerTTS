@@ -1,13 +1,15 @@
 
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { IElectrionAPI, ipcToMainChannels, IVoiceProfile } from "../../ICommonInterfaces";
-import { ITheme } from '../theme';
-import { DataManager } from './DataManager';
-import { TTSInputField } from './inputField/TTSInputField';
-import { Instructions } from './instructions';
-import { VoiceOptions } from './voiceOptions/VoiceOptions';
-import { VoiceProfileSelect } from './VoiceProfileSelect';
+import { ipcFromMainChannels } from "../../ICommonInterfaces";
+import { IElectrionAPI } from '../../mainElectronProcess/preload';
+import { defaultTheme } from './UI/theme';
+import { useDataManager } from './DataManager';
+import { TTSInputField } from './mainpane/inputField/TTSInputField';
+import { Instructions } from './mainpane/Instructions';
+import { Settings } from './mainpane/Settings';
+import { VoiceOptions } from './mainpane/voiceOptions/VoiceOptions';
+import { VoiceProfileSelect } from './sidepane/VoiceProfileSelect';
 
 interface IAppProps
 {
@@ -16,73 +18,67 @@ interface IAppProps
 
 export const App:React.FC<IAppProps> = (props) => {
    
-    const dataManager=React.useState<DataManager>(new DataManager())[0];
-
-    //State that's saved, keep up to date references in datamanager object.
-    const [activeVoiceKey, setActiveVoiceKey] = React.useState<string>();
-    dataManager.activeVoiceKey=activeVoiceKey; 
-    dataManager.setActiveVoiceKey=setActiveVoiceKey;
-    const [voiceProfiles, setVoiceProfiles] = React.useState<{[key: string]: IVoiceProfile}>();
-    dataManager.voiceProfiles=voiceProfiles;
-    dataManager.setVoiceProfiles=setVoiceProfiles;
+    const dm=useDataManager(props.electronAPI);
 
     //Transient state
     const [needToAssignFocus,setNeedToAssignFocus] = React.useState<boolean>(false);
 
     //Load and save data
     React.useEffect(()=>{
-        if(!activeVoiceKey){
-            dataManager.LoadData();
+        if(!dm.activeVoiceKey){
+            dm.LoadData();
         }
         else{
             //data exists and changed, save
-            dataManager.SaveData();
+            dm.SaveData();
         }
-    },[activeVoiceKey, JSON.stringify(voiceProfiles)]);
+    },[dm.activeVoiceKey, JSON.stringify(dm.voiceProfiles),dm.startCommand,dm.stopCommand]);
     
     //import/export/clear data
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.export,dataManager.ExportToClipboard.bind(dataManager));
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.export,dm.ExportToClipboard.bind(dm));
         return removeListener;
     },[]);
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.import,dataManager.ImportFromClipboard.bind(dataManager));
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.import,dm.ImportFromClipboard.bind(dm));
         return removeListener;
     },[]);
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.restoreDefaults,dataManager.RestoreDefaults.bind(dataManager));
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.restoreDefaults,dm.RestoreDefaults.bind(dm));
         return removeListener;
     },[]);
 
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.startCommandSet,(_event: Electron.IpcRendererEvent, value: string)=>{
+            dm.setStartCommand(value);
+        });
+        return removeListener;
+    },[]);
 
-    const theme: ITheme = {
-        editBackColor:  "rgb(247, 217, 247)",
-        appBackTextColor: "white",
-        appBackColor:"rgb(159, 109, 159)",
-        sliderThumbBackColor: "rgb(78, 113, 85)",
-        sliderThumbTextColor: "white",
-        labelTextColor: "rgb(72,72,72)",
-        selectedBorderColor: "rgb(72,255,10)",
-        errorColor: "#f1ff3b"
-      };
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.stopCommandSet,(_event: Electron.IpcRendererEvent, value: string)=>{
+            dm.setStopCommand(value);
+        });
+        return removeListener;
+    },[]);
 
-    const voiceProfile= voiceProfiles ? voiceProfiles[activeVoiceKey] : null;
+    const voiceProfile= dm.voiceProfiles ? dm.voiceProfiles[dm.activeVoiceKey] : null;
 
-    return  voiceProfiles ? <ThemeProvider theme={theme}>
+    return  dm.voiceProfiles ? <ThemeProvider theme={defaultTheme}>
                 <OuterDiv> 
                     <MainPane>
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
-                            setvoiceProfile={dataManager.updateVoiceProfile.bind(dataManager)} setNeedToAssignFocus={setNeedToAssignFocus}/>
+                            setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
                         <Instructions electronAPI={props.electronAPI}/>
+                       <Settings startCommand={dm.startCommand} setStartCommand={dm.setStartCommand.bind(dm)} stopCommand={dm.stopCommand} setStopCommand={dm.setStopCommand.bind(dm)} electronAPI={props.electronAPI}/>
                     </MainPane>
                     <SidePane>
-                        <VoiceProfileSelect activeVoiceKey={activeVoiceKey} voiceProfiles={voiceProfiles} setActiveVoiceProfile={setActiveVoiceKey} 
-                            removeVoiceProfile={dataManager.removeVoiceProfile.bind(dataManager)}/>
+                        <VoiceProfileSelect activeVoiceKey={dm.activeVoiceKey} voiceProfiles={dm.voiceProfiles} setActiveVoiceProfile={dm.setActiveVoiceKey} 
+                            removeVoiceProfile={dm.removeVoiceProfile.bind(dm)}/>
                     </SidePane>
                 </OuterDiv>
             </ThemeProvider> : null;
-    
 };
 
 const OuterDiv= styled.div`

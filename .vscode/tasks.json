@@ -1,14 +1,36 @@
 {
 	"version": "2.0.0",
 	"tasks": [
+		
+		{
+		"label": "Build",
+		"dependsOn": ["copy css", "build react"],
+		"group": "build",
+		},
 		{
 			"type": "typescript",
 			"tsconfig": "tsconfig.json",
-			"problemMatcher": [
-				"$tsc"
-			],
-			"group": "build",
+			"problemMatcher": ["$tsc"],
 			"label": "tsc: build - tsconfig.json"
 		}
+		,{
+			"label": "copy css",
+			"type": "shell",
+			"command": "copy ./src/Styles.css ./dist/Styles.css",
+		},
+		{
+			"label": "build electron",
+			"type": "shell",
+			"command": "npm run build",
+			"problemMatcher": ["$tsc"],
+			"dependsOn": ["tsc: build - tsconfig.json"]
+		},
+		{
+			"label": "build react",
+			"type": "shell",
+			"command": "npm run build:react",
+			"problemMatcher": ["$tsc"],
+			"dependsOn": ["build electron"]
+		},
 	]
 }

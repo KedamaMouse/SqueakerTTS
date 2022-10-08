@@ -1,6 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ipcToMainChannels } from '../../ICommonInterfaces';
+import { ipcFromMainChannels } from '../../../ICommonInterfaces';
+import { IElectrionAPI } from '../../../mainElectronProcess/preload';
+import { SectionDiv } from '../UI/CommonStyledComponents';
 
 
 interface IInstructionsProps
@@ -13,7 +15,7 @@ export const Instructions:React.FC<IInstructionsProps> = (props) => {
     const [errorText,setErrorText] = React.useState<string>("");
     
     React.useEffect(()=>{
-        const removeListener=props.electronAPI.on(ipcToMainChannels.errorReconnect,()=>{
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.errorReconnect,()=>{
             setErrorText("background process disconnected. reconnecting.");
         });
         return removeListener;
@@ -30,27 +32,16 @@ export const Instructions:React.FC<IInstructionsProps> = (props) => {
     },[errorText])
     
     
-    return <OuterDiv>
+    return <SectionDiv>
         <ErrorDiv>{errorText}</ErrorDiv>
         w(text) to whipser <br/>
         ee(text) for strong emphasis <br/>
         e(text) for modorate emphasis <br/>
         r(text) for reduced emphasis <br/>
         s(text) for soft phonation <br/>
-
-
-    </OuterDiv>
+    </SectionDiv>
 }
 
-const OuterDiv= styled.div`
-    margin-top: 10px;
-    color: ${props => props.theme.appBackTextColor};
-    border-width: 2px;
-    border-style: solid;
-    border-radius: 10px;
-    border-color: ${props => props.theme.editBackColor};
-    padding: 4px;
-`
 const ErrorDiv = styled.div`
     color: ${props => props.theme.errorColor};
 `

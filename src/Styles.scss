@@ -1,7 +1,0 @@
-//This allows the entire viewport to be the root react component, allowing styled components to control all other styling.
-body, html, #renderer
-{
-    margin: 0px;
-    width: 100%;
-    height: 100%;
-}
