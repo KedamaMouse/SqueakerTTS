@@ -3,9 +3,12 @@ const path = require("path");
 const config = {
   target: "electron-main",
   devtool: "source-map",
-  entry: "./src/main.ts",
+  entry: {
+    main: "./src/main.ts",
+    preload: "./src/mainElectronProcess/preload.ts"
+  },
   output: {
-    filename: "main.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist")
   },
   module: {
@@ -25,7 +28,7 @@ const config = {
   node: {
     __dirname: false,
     __filename: false
-  }
+  },
 };
 
 module.exports = (env, argv) => {

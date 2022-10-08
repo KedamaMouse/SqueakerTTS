@@ -22,9 +22,8 @@ Currently have things setup for c# .net dev in visual studio, and electron/react
 
 # Build
 * In VSCode run the default build task(ctrl+shift+b). This:
-* * Runs the typesscript comipler to output the results in the dist folder
-* * Runs ```npm run build:react```. This copies index.html over to dist, it also necessary for react changes currently though i'm not sure what isn't caught by the ts compile.
-* * Runs ```npm run build```. I'm not sure this is necessary anymore?
+* * Runs ```npm run build```. compiles main process code/dependencies into main.js. Also compiles the preload script into preload.js
+* * Runs ```npm run build:react```. compiles render process code/dependencies into render.js. This also copies index.html over to dist. 
 * * copies ```.\src\Styles.css``` to ```.\dist\Styles.css```
 * compile the .net projects in SqueakerTTS.sln. if using visual studio this has a post-build task to copy the binaries to the appropriate place in the dist folder.
 

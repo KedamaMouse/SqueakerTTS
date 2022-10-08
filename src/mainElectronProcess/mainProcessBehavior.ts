@@ -32,7 +32,7 @@ export class mainProcessBehavior {
           nodeIntegrationInWorker: false,
           nodeIntegrationInSubFrames: false,
           contextIsolation: true,
-          preload: path.join(__dirname, "mainElectronProcess\\preload.js"),
+          preload: path.join(__dirname, "preload.js"),
           disableBlinkFeatures: "Auxclick",
           backgroundThrottling: false,
         },

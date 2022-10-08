@@ -4,16 +4,10 @@
 		
 		{
 		"label": "Build",
-		"dependsOn": ["copy css", "build react"],
+		"dependsOn": ["copy css", "build react","build electron"],
 		"group": "build",
 		},
 		{
-			"type": "typescript",
-			"tsconfig": "tsconfig.json",
-			"problemMatcher": ["$tsc"],
-			"label": "tsc: build - tsconfig.json"
-		}
-		,{
 			"label": "copy css",
 			"type": "shell",
 			"command": "copy ./src/Styles.css ./dist/Styles.css",
@@ -23,14 +17,12 @@
 			"type": "shell",
 			"command": "npm run build",
 			"problemMatcher": ["$tsc"],
-			"dependsOn": ["tsc: build - tsconfig.json"]
 		},
 		{
 			"label": "build react",
 			"type": "shell",
 			"command": "npm run build:react",
 			"problemMatcher": ["$tsc"],
-			"dependsOn": ["build electron"]
 		},
 	]
 }
