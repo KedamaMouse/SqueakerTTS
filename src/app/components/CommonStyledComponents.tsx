@@ -24,3 +24,13 @@ export const Button = styled.button`
     float: right;
     font-size: 10px;
 `
+export const LinkButton = styled.button`
+    background-color: transparent;
+    border: none;
+    color: ${props => props.theme.appBackTextColor};
+    font-size: inherit;
+    &:hover, &:focus
+    {
+        text-decoration: underline;
+    }
+`

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ipcFromMainChannels } from '../../ICommonInterfaces';
+import { ipcFromMainChannels } from '../../ICommonInterfaces';
+import { IElectrionAPI } from '../../mainElectronProcess/preload';
 import { SectionDiv } from './CommonStyledComponents';
 
 

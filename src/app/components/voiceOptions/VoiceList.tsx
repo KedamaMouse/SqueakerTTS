@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, IVoiceProfile } from "../../../ICommonInterfaces";
+import { IVoiceProfile } from "../../../ICommonInterfaces";
+import { IElectrionAPI } from '../../../mainElectronProcess/preload';
 import { IVoiceInfo } from './VoiceOptions';
 
 interface IVoiceListProps

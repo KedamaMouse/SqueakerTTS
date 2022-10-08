@@ -1,7 +1,8 @@
 
 import * as React from 'react';
 import styled, { ThemeProvider } from 'styled-components';
-import { IElectrionAPI, ipcFromMainChannels } from "../../ICommonInterfaces";
+import { ipcFromMainChannels } from "../../ICommonInterfaces";
+import { IElectrionAPI } from '../../mainElectronProcess/preload';
 import { defaultTheme } from '../theme';
 import { useDataManager } from './DataManager';
 import { TTSInputField } from './inputField/TTSInputField';
@@ -70,7 +71,7 @@ export const App:React.FC<IAppProps> = (props) => {
                         <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                             setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
                         <Instructions electronAPI={props.electronAPI}/>
-                       <Settings dataManager={dm}/>
+                       <Settings startCommand={dm.startCommand} setStartCommand={dm.setStartCommand.bind(dm)} stopCommand={dm.stopCommand} setStopCommand={dm.setStopCommand.bind(dm)} electronAPI={props.electronAPI}/>
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect activeVoiceKey={dm.activeVoiceKey} voiceProfiles={dm.voiceProfiles} setActiveVoiceProfile={dm.setActiveVoiceKey} 

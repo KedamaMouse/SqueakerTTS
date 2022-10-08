@@ -1,5 +1,6 @@
-import { IData, IElectrionAPI, IVoiceProfile } from "../../ICommonInterfaces";
+import { IData, IVoiceProfile } from "../../ICommonInterfaces";
 import * as React from 'react';
+import { IElectrionAPI } from "../../mainElectronProcess/preload";
 
 //Manager for all state that needs to be saved.
 

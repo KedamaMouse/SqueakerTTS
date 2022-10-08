@@ -4,7 +4,7 @@
 		
 		{
 		"label": "Build",
-		"dependsOn": ["tsc: build - tsconfig.json", "copy css", "build electron", "build react"],
+		"dependsOn": ["copy css", "build react"],
 		"group": "build",
 		},
 		{

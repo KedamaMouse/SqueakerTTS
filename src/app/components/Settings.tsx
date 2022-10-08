@@ -1,22 +1,37 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { Button, SectionDiv } from './CommonStyledComponents';
+import { IElectrionAPI } from '../../mainElectronProcess/preload';
+import { Button, LinkButton, SectionDiv } from './CommonStyledComponents';
 import { DataManager } from './DataManager';
 
 interface ISettingsProps
 {
-    dataManager: DataManager;
+    electronAPI : IElectrionAPI;
+    startCommand: string;
+    setStartCommand:(command: string)=> void;
+    stopCommand: string;
+    setStopCommand:(command: string)=> void;
 }
 
 export const Settings: React.FC<ISettingsProps> = (props) => {
     
-    const removeStartSpeaking = props.dataManager.setStartCommand.bind(props.dataManager,"");
-    const removeStopSpeaking = props.dataManager.setStopCommand.bind(props.dataManager,"");
+    const removeStartSpeaking = ()=>{props.setStartCommand("")}
+    const removeStopSpeaking = ()=>{props.setStopCommand("")};
+
+    const startText= props.startCommand ? getShortPath(props.startCommand) : "select";
+    const stopText=props.stopCommand ? getShortPath(props.stopCommand) : "select";
 
 
     return <SectionDiv>
-        <SettingLine>On Start speaking: {getShortPath(props.dataManager.startCommand)}<Button onClick={removeStartSpeaking}>X</Button></SettingLine>
-        <SettingLine>On Stop speaking: {getShortPath(props.dataManager.stopCommand)}<Button onClick={removeStopSpeaking}>X</Button></SettingLine>
+        <SettingLine>On Start speaking: 
+            <LinkButton onClick={()=>{props.electronAPI.promptForStartCommand()}}>{startText}</LinkButton>
+            {props.startCommand ? <Button onClick={removeStartSpeaking}>X</Button> : null}
+        </SettingLine>
+        <SettingLine>
+            On Stop speaking: 
+            <LinkButton onClick={()=>{props.electronAPI.promptForStopCommand()}}>{stopText}</LinkButton>
+            {props.stopCommand ? <Button onClick={removeStopSpeaking}>X</Button> : null}
+        </SettingLine>
     </SectionDiv>
 }
 

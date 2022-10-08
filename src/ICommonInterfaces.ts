@@ -1,12 +1,6 @@
 import { IpcRendererEvent } from "electron";
 
 
-export interface IElectrionAPI {
-    sendTTSCommand: (command: string, arg?: any) => Promise<any>;
-    speak: (args: ITTSRequest) => Promise<any>;
-    on: (channel: ipcFromMainChannels, callback: (event: IpcRendererEvent, ...args: any[]) => void) => ()=>void;
-}
-
 export enum ipcFromMainChannels
 {
     import = "import",

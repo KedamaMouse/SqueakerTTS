@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { IElectrionAPI, ITTSRequest, IVoiceProfile } from '../../../ICommonInterfaces';
+import { ITTSRequest, IVoiceProfile } from '../../../ICommonInterfaces';
+import { IElectrionAPI } from '../../../mainElectronProcess/preload';
 import { InputHistory } from './InputHistory';
 
 interface IAppProps
