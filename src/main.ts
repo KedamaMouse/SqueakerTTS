@@ -19,7 +19,10 @@ const createWindow = () => {
     preload: path.join(__dirname, "preload.js"),
     disableBlinkFeatures: "Auxclick",
     backgroundThrottling: false,
-  }});
+    
+  },
+  icon: path.join(__dirname,"..\\assets\\MediumCheese.ico"),
+});
   
   Menu.setApplicationMenu(Menu.buildFromTemplate(GetMenuTemplate(window)));
   window.loadURL(
