@@ -46,13 +46,10 @@
     "webpack-cli": "^4.10.0"
   },
   "dependencies": {
-    "gulp": "^4.0.2",
-    "gulp-sass": "^5.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hotkeys": "^2.0.0",
     "react-slider": "^2.0.1",
-    "sqlite3": "^5.0.11",
     "styled-components": "^5.3.5"
   }
 }
