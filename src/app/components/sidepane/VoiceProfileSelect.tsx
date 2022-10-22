@@ -89,14 +89,24 @@ interface IVoiceProfileWidgetProps
 const VoiceProfleWidget:React.FC<IVoiceProfileWidgetProps> = (props) =>{
 
     const onClick = React.useCallback(()=>{props.setActiveVoiceProfile(props.voiceProfile.key)},[props.setActiveVoiceProfile]);
+    const outerdiv = React.useRef<HTMLDivElement>();
 
     const onRemove:React.MouseEventHandler<HTMLButtonElement> = (event)=>{ 
         props.removeVoiceProfile(props.voiceProfile.key);    
         event.stopPropagation();
     }
 
+    React.useEffect(()=>
+    {
+        if(props.selected && outerdiv.current)
+        {
+            
+            outerdiv.current.scrollIntoView({block: "nearest"})
+        }
+    },[props.selected,outerdiv])
 
-    return <OuterDiv onClick={onClick } activeProfile={props.selected} compactMode={props.compactMode} >
+
+    return <OuterDiv onClick={onClick } activeProfile={props.selected} compactMode={props.compactMode} ref={outerdiv}>
         <TopRow>
             <NameSpan compactMode={props.compactMode}>{props.voiceProfile.key}</NameSpan>
             {props.hotkey ? <span>({props.hotkey})</span> : null}
