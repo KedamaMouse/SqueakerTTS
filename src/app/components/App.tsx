@@ -10,6 +10,7 @@ import { Instructions } from './mainpane/Instructions';
 import { Settings } from './mainpane/Settings';
 import { VoiceOptions } from './mainpane/voiceOptions/VoiceOptions';
 import { VoiceProfileSelect } from './sidepane/VoiceProfileSelect';
+import { Button } from './UI/CommonStyledComponents';
 
 interface IAppProps
 {
@@ -22,6 +23,7 @@ export const App:React.FC<IAppProps> = (props) => {
 
     //Transient state
     const [needToAssignFocus,setNeedToAssignFocus] = React.useState<boolean>(false);
+    const [compactMode, setCompactMode] = React.useState<boolean>(false);
 
     //Load and save data
     React.useEffect(()=>{
@@ -68,14 +70,17 @@ export const App:React.FC<IAppProps> = (props) => {
                 <OuterDiv> 
                     <MainPane>
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
-                        <VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
-                            setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
-                        <Instructions electronAPI={props.electronAPI}/>
-                       <Settings startCommand={dm.startCommand} setStartCommand={dm.setStartCommand.bind(dm)} stopCommand={dm.stopCommand} setStopCommand={dm.setStopCommand.bind(dm)} electronAPI={props.electronAPI}/>
+                        <Button onClick={()=>{setCompactMode(!compactMode);} }>^</Button>
+                        {compactMode ? null : 
+                            <><VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
+                                setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
+                              <Instructions electronAPI={props.electronAPI}/>
+                              <Settings startCommand={dm.startCommand} setStartCommand={dm.setStartCommand.bind(dm)} stopCommand={dm.stopCommand} setStopCommand={dm.setStopCommand.bind(dm)} electronAPI={props.electronAPI}/>
+                            </>}
                     </MainPane>
                     <SidePane>
                         <VoiceProfileSelect activeVoiceKey={dm.activeVoiceKey} voiceProfiles={dm.voiceProfiles} setActiveVoiceProfile={dm.setActiveVoiceKey} 
-                            removeVoiceProfile={dm.removeVoiceProfile.bind(dm)}/>
+                            removeVoiceProfile={dm.removeVoiceProfile.bind(dm)} compactMode={compactMode}/>
                     </SidePane>
                 </OuterDiv>
             </ThemeProvider> : null;

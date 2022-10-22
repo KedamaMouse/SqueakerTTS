@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled,{ css } from "styled-components";
 
 export const Label= styled.label`
     color: ${props => props.theme.appBackTextColor};
@@ -20,9 +20,20 @@ export const SectionDiv= styled.div`
     font-size: 12px;
 `
 
-export const Button = styled.button`
-    float: right;
+interface IButtonProps
+{
+    floatRight?: boolean;
+    compactMode?: boolean;
+}
+export const Button = styled.button<IButtonProps>`
     font-size: 10px;
+    ${props => props.floatRight && css`
+        float: right;
+    `}
+    ${props => props.compactMode && css`
+        padding: 0px;
+        font-size: 8px;
+    `}
 `
 export const LinkButton = styled.button`
     background-color: transparent;
