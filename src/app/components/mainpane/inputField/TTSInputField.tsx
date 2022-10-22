@@ -81,7 +81,7 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
 }
 
 const TextArea = styled.textarea<{compactMode: boolean}>`
-    width:  calc(100% - 33px);
+    width:  calc(100% - 35px);
     background-color: ${props => props.theme.editBackColor};
 
     ${props => props.compactMode && css`
