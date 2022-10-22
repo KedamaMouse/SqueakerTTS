@@ -83,7 +83,8 @@ export const App:React.FC<IAppProps> = (props) => {
                 <OuterDiv> 
                     <MainPane>
                         <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} compactMode={compactMode} />
-                        <Button style={{verticalAlign: "top", marginLeft: "2px"}} onClick={setCompactModeHandler }>{compactMode ? "︾" : "︽"}</Button>
+                        <Button style={{verticalAlign: "top", marginLeft: "2px"}} onClick={setCompactModeHandler } title="compact mode">
+                            {compactMode ? "︾" : "︽"}</Button>
                         {compactMode ? null : 
                             <><VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                                 setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>
