@@ -66,11 +66,24 @@ export const App:React.FC<IAppProps> = (props) => {
 
     const voiceProfile= dm.voiceProfiles ? dm.voiceProfiles[dm.activeVoiceKey] : null;
 
+    const setCompactModeHandler= () => 
+    {
+        if(compactMode)
+        {
+            props.electronAPI.setWindowSize(0,0);//0 0 for default size.
+        }
+        else
+        {
+            props.electronAPI.setWindowSize(500,150);
+        }
+        setCompactMode(!compactMode);
+    };
+
     return  dm.voiceProfiles ? <ThemeProvider theme={defaultTheme}>
                 <OuterDiv> 
                     <MainPane>
-                        <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} />
-                        <Button onClick={()=>{setCompactMode(!compactMode);} }>^</Button>
+                        <TTSInputField electronAPI={props.electronAPI} voiceProfile={voiceProfile} setNeedToAssignFocus={setNeedToAssignFocus} takeFocus={needToAssignFocus} compactMode={compactMode} />
+                        <Button style={{verticalAlign: "top"}} onClick={setCompactModeHandler }>{compactMode ? "︾" : "︽"}</Button>
                         {compactMode ? null : 
                             <><VoiceOptions electronAPI={props.electronAPI} voiceProfile={voiceProfile} 
                                 setvoiceProfile={dm.updateVoiceProfile.bind(dm)} setNeedToAssignFocus={setNeedToAssignFocus}/>

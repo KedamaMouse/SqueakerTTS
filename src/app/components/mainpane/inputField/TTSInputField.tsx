@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled,{ css } from "styled-components";
 import { ITTSRequest, IVoiceProfile } from '../../../../ICommonInterfaces';
 import { IElectrionAPI } from '../../../../mainElectronProcess/preload';
 import { InputHistory } from './InputHistory';
@@ -10,6 +10,7 @@ interface IAppProps
     voiceProfile: IVoiceProfile;
     setNeedToAssignFocus : (value: boolean)=> void;
     takeFocus: boolean;
+    compactMode: boolean;
 }
 
 export const TTSInputField:React.FC<IAppProps> = (props) => {
@@ -75,10 +76,17 @@ export const TTSInputField:React.FC<IAppProps> = (props) => {
     },[props.takeFocus,textArea.current,props.setNeedToAssignFocus]);
 
 
-    return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} onKeyDown={onKeyDown} value={text} onChange={handleChange} ref={textArea} />
+    return <TextArea accessKey='`' autoFocus onKeyUp={onKeyUp} onKeyDown={onKeyDown} 
+            value={text} onChange={handleChange} ref={textArea} compactMode={props.compactMode} />
 }
 
-const TextArea = styled.textarea`
-    width:  calc(100% - 6px);
+const TextArea = styled.textarea<{compactMode: boolean}>`
+    width:  calc(100% - 33px);
     background-color: ${props => props.theme.editBackColor};
-`
+
+    ${props => props.compactMode && css`
+        height: calc(100% - 2px);
+        font-size: 16px;
+        
+    `}
+    `

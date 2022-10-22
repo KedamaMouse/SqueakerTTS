@@ -5,6 +5,9 @@ import { ConnectionHandler } from "./ConnectionHandler";
 import { GetMenuTemplate } from "./electronMenu";
 import { ipcFromMainChannels } from "../ICommonInterfaces";
 
+const WINDOW_DEFAULT_WIDTH=600;
+const WINDOW_DEFAULT_HEIGHT=600;
+
 export class mainProcessBehavior {
   window: BrowserWindow;
 
@@ -21,12 +24,13 @@ export class mainProcessBehavior {
     });
     ipcMain.handle("promptForStartCommand",this.promptForStartCommand.bind(this));
     ipcMain.handle("promptForStopCommand",this.promptForStopCommand.bind(this));
+    ipcMain.handle("setWindowSize",this.setWindowSize.bind(this));
   }
 
   private createWindow() {
     if (!this.window) {
       this.window = new BrowserWindow({
-        width: 600, height: 600, webPreferences: {
+        width: WINDOW_DEFAULT_WIDTH, height: WINDOW_DEFAULT_HEIGHT, webPreferences: {
           devTools: true,
           nodeIntegration: false,
           nodeIntegrationInWorker: false,
@@ -73,6 +77,19 @@ export class mainProcessBehavior {
     if(file && file.length >0){
         this.send(ipcFromMainChannels.stopCommandSet,file[0]);
     }
+  }
+
+  private setWindowSize(_event: Electron.IpcMainInvokeEvent, width: number, height: number)
+  {
+    if(width === 0)
+    {
+      width=WINDOW_DEFAULT_WIDTH;
+    }
+    if(height === 0)
+    {
+      height=WINDOW_DEFAULT_HEIGHT;
+    }
+    this.window.setSize(width,height);
   }
 
 }
