@@ -94,7 +94,7 @@ public class SqueakerTTSCmd {
 
         if (!String.IsNullOrEmpty(StartCommand))
         {
-            Process.Start(StartCommand);
+            Process.Start(StartCommand, new string[] { request.text });
         }
         SetVoice(request.voice);
         synthesizer.SpeakCompleted += onSpeakCompleted;
