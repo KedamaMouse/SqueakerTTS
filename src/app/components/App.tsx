@@ -36,6 +36,13 @@ export const App:React.FC<IAppProps> = (props) => {
         }
     },[dm.activeVoiceKey, JSON.stringify(dm.voiceProfiles),dm.startCommand,dm.stopCommand]);
     
+    React.useEffect(()=>{
+        const removeListener=props.electronAPI.on(ipcFromMainChannels.errorReconnect,()=>{
+            dm.LoadData();
+        });
+        return removeListener;
+    },[]);
+
     //import/export/clear data
     React.useEffect(()=>{
         const removeListener=props.electronAPI.on(ipcFromMainChannels.export,dm.ExportToClipboard.bind(dm));
