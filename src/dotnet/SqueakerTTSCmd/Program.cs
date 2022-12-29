@@ -89,13 +89,14 @@ public class SqueakerTTSCmd {
     }
     public void Speak(TTSRequest request) 
     {
-        //System.Console.WriteLine("start speaking");
-        if (String.IsNullOrEmpty(request.text)) { return;}
-
+  
         if (!String.IsNullOrEmpty(StartCommand))
         {
             Process.Start(StartCommand, new string[] { request.text });
         }
+
+        if (String.IsNullOrEmpty(request.text)) { return; }
+
         SetVoice(request.voice);
         synthesizer.SpeakCompleted += onSpeakCompleted;
 
